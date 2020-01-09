@@ -1,5 +1,51 @@
+@import '~antd/dist/antd.css';
+
+@font-face {
+  font-family: 'webfont';
+  font-display: swap;
+  src: url('//at.alicdn.com/t/webfont_m84q36zs3kp.eot');
+  /* IE9*/
+  src: url('//at.alicdn.com/t/webfont_m84q36zs3kp.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */
+    url('//at.alicdn.com/t/webfont_m84q36zs3kp.woff2') format('woff2'),
+    url('//at.alicdn.com/t/webfont_m84q36zs3kp.woff') format('woff'),
+    /* chrome、firefox */
+    url('//at.alicdn.com/t/webfont_m84q36zs3kp.ttf') format('truetype'),
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('//at.alicdn.com/t/webfont_m84q36zs3kp.svg#杨任东竹石体-Bold') format('svg');
+  /* iOS 4.1- */
+}
+
+
+@font-face {
+  font-family: 'bariol';
+  font-display: swap;
+  src: url('./assets/fonts/bariol_regular_italic-webfont.eot');
+  /* IE9*/
+  src: url('./assets/fonts/bariol_regular_italic-webfont.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */
+    url('./assets/fonts/bariol_regular_italic-webfont.woff2') format('woff2'),
+    url('./assets/fonts/bariol_regular_italic-webfont.woff') format('woff'),
+    /* chrome、firefox */
+    url('./assets/fonts/bariol_regular_italic-webfont.ttf') format('truetype'),
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('./assets/fonts/bariol_regular_italic-webfont.svg') format('svg');
+  /* iOS 4.1- */
+}
+
+
+.iconfot {
+  font-family: 'VisbyRoundCF-Bold';
+}
+
+.bariol {
+  font-family: "bariol"
+}
+
+
 .App {
   text-align: center;
+  overflow: hidden;
 }
 
 .App-logo {

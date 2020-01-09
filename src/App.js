@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
+import Header from './components/Header'
+import Footer from './components/Footer'
+
+import Home from './pages/home/home'
+import Blog from './pages/blog/blog'
+import Article from './pages/article/article'
+
+import { BackTop } from 'antd'
+import { BrowserRouter, Route } from 'react-router-dom'
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// import Cube from './components/Cube/Cube'
+
+
+function App () {
+    return (
+
+        < div className="App">
+            <BrowserRouter>
+                <Header />
+                <Route path='/home' exact component={Home}></Route>
+                <Route path='/blog' exact component={Blog}></Route>
+                <Route path='/blog/:articleId' exact component={Article}></Route>
+                {/* <Cube /> */}
+                <Footer />
+                <BackTop />
+            </BrowserRouter>
+        </div >
+    );
 }
 
 export default App;
