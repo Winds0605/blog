@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 
 export const Container = styled.div`
+    position:relative;
     height:70px;
     width:80%;
     margin:0 auto;
@@ -25,6 +26,11 @@ export const NavItem = styled.li`
     list-style:none;
     margin:0 20px;
     cursor:pointer;
+    color:black;
+    &:hover {
+        text-decoration:underline
+        color: black;
+    }
 `
 
 export const Test = styled.div`

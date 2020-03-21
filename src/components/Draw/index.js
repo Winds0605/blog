@@ -13,22 +13,23 @@ export default () => {
     const [visible, setVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [submitting, setSubmitting] = useState(false)
-    const [commentInfo, setCommentInfo] = useState({
+    const [messageInfo, setMessageInfo] = useState({
         author: '',
         content: ''
     })
     const inputEl = useRef();
     const INITCOMMENT = 1;
+    const MessageUrl = '/messages/findAll'
 
     // 提交留言
     let handleSubmit = async () => {
-        if (!commentInfo.author || !commentInfo.content) {
+        if (!messageInfo.author || !messageInfo.content) {
             message.warning('你还没输入内容呢 😫')
             return;
         }
         setSubmitting(true)
         try {
-            let res = await post('/comments/add', commentInfo)
+            let res = await post('/messages/add', messageInfo)
             if (res.data.errorCode === 0) {
                 message.success('留言成功 🥰')
             } else {
@@ -37,27 +38,27 @@ export default () => {
         } catch (error) {
             message.error('留言失败 😖')
         }
-        setCommentInfo({
+        setMessageInfo({
             author: '',
             content: ''
         })
-        inputEl.current.updateData(INITCOMMENT)
+        inputEl.current.updateData(INITCOMMENT, MessageUrl)
         setModalVisible(false)
         setSubmitting(false)
     };
 
     // 作者输入框改变事件
     let handleAuthorChange = e => {
-        setCommentInfo({
-            ...commentInfo,
+        setMessageInfo({
+            ...messageInfo,
             author: e.target.value
         })
     };
 
     // 内容输入框改变事件
     let handleContentChange = e => {
-        setCommentInfo({
-            ...commentInfo,
+        setMessageInfo({
+            ...messageInfo,
             content: e.target.value
         })
     };
@@ -105,10 +106,10 @@ export default () => {
                             handleAuthorChange={handleAuthorChange}
                             onSubmit={handleSubmit}
                             submitting={submitting}
-                            content={commentInfo.content}
-                            author={commentInfo.author} />
+                            content={messageInfo.content}
+                            author={messageInfo.author} />
                     </Modal>
-                    <Comment cRef={inputEl} />
+                    <Comment cRef={inputEl} MessageUrl={MessageUrl} />
                 </Drawer>
             </Draw>
         </>

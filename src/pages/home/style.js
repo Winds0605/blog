@@ -36,15 +36,22 @@ export const Person = styled.div`
 
 export const LeftArea = styled.div`
     height:400px;
-    border:1px solid #758184;
     border-radius:5px;
+    cursor:pointer;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
 `
 
 export const RightArea = styled.div`
     height:400px;
-    border:1px solid #758184;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
     border-radius:5px;
     font-family:monospace;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
 `
 
 export const Describe = styled.div`
@@ -63,7 +70,10 @@ export const PhotoWall = styled.div`
     width:80%;
     height:500px;
     margin:30px auto 100px;
-    border:1px solid #758184;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
     border-radius:5px;
 `
 

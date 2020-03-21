@@ -5,40 +5,83 @@ export const Container = styled.div`
     margin:100px auto;
 `
 
-export const Left = styled.div`
-    border:1px solid #758184;
-    border-radius:5px;
-`
-
 export const Middle = styled.div`
-
+border-radius:5px;
+padding:40px 10px;
+box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+&:hover {
+    box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+}
 `
 
 export const Right = styled.div`
     height:300px;
-    border:1px solid #758184;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
+    margin-top:20px;
     border-radius:5px;
 `
 
 export const BlogItem = styled.div`
     position:relative;
-    height:250px;
     margin-bottom:40px;
     padding:20px;
-    border:1px solid #758184;
     border-radius:5px;
+    color:#797979;
 
-    p{
-        text-indent:2em;
+    .content{
+        overflow:hidden;
         text-align:left;
-        color:grey;
+        font-weight:600;
+        p {
+            margin-top:1em;
+            margin-bottom:1em;
+        }
     }
 
-    .split{
-        display:inline-block;
-        width:2px;
-        height:20px;
-        background-color:black;
+    .image {
+        width:100%;
+        img {
+            width:100%;
+        }
+    }
+
+    .desc {
+        text-align:center;
+        font-size:10px;
+        font-weight:600;
+        margin-bottom:10px;
+        h1 {
+            font-size: 25px;
+            margin: 25px 0;
+        }
+        .tag {
+            width:fit-content;
+            display:inline-block;
+            margin-right:10px;
+            border-bottom: 1px solid #797979;
+            cursor:pointer;
+            &:hover {
+                color:#000;
+                border-bottom: 1px solid #000;
+            }
+        }
+    }
+
+    .footer{
+        margin-top:20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align:center;
+        letter-spacing: 2px;
+        color:#797979;
+        border-bottom: 1px solid #eee;
+        cursor:pointer;
+        &:hover {
+            color:#000;
+        }
     }
 `
 
@@ -49,7 +92,10 @@ export const Detail = styled.div`
 
 export const Classif = styled.div`
     height:100px;
-    border:1px solid #758184;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
     border-radius:5px;
     padding:0 10px;
     margin-top:20px;

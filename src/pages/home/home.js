@@ -15,7 +15,6 @@ import Draw from 'components/Draw/'
 import 'App.css'
 
 export default () => {
-
     return (
         <>
             <Introduction className="iconfot">
@@ -43,16 +42,16 @@ export default () => {
                     </Col>
                     <Col className="gutter-row" span={18}>
                         <RightArea>
-                            <h1 style={{ marginTop: '20px' }}>Welcome To My World</h1>
+                            <h1>Welcome To My World</h1>
                             <Describe>
                                 <p>
-                                    来自闽江学院，一名大四的学生。计控学院，软件工程，所学方向是Web前端<br />
+                                    {/* 来自闽江学院，一名大四的学生。计控学院，软件工程，所学方向是Web前端<br />
                                     喜欢好吃的，喜欢电影、阅读、音乐，喜欢生活中一切美好的事物<br />
                                     讨厌等待，讨厌没有逻辑的人，讨厌出门时下雨，讨厌听音乐时网络差<br />
                                     特立独行，不好随波逐流<br />
                                     有时候会很抑郁，有时候会很阳光，或许取决于今天有没有吃饱饭<br />
                                     话题终结者，就算和喜欢的女生聊天也经常 "哈哈哈哈哈哈哈"<br />
-                                    未来的梦想是：走遍世界的每一个角落，记录下所见的美好<br />
+                                    未来的梦想是：走遍世界的每一个角落，记录下所见的美好<br /> */}
                                     ...
                                 </p>
                             </Describe>

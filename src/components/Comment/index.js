@@ -1,21 +1,30 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react'
-import { Comment, List, Pagination, message, Modal, Icon } from 'antd';
+import { Comment, List, Pagination, message, Modal, Icon, Empty } from 'antd';
 import Message from 'components/Message'
+import { Container } from './style'
 import { post } from 'utils/http'
 import { formatDate } from 'utils/util'
-import { StyleRoot } from 'radium'
-import { styles } from './style'
+
+const paginationStyle = {
+    textAlign: 'center',
+    margin: '10px 0px',
+    bottom: '0',
+    position: "absolute",
+    transform: 'translateX(-50%)',
+    left: '50%'
+}
 
 // 子评论组件
-const SubComment = (comments) => {
-    if (comments.subComment.length > 0) {
-        const comment = comments.subComment
+const SubMessage = (messages) => {
+    if (messages.sub.length > 0) {
+        const comment = messages.sub
         return (
             comment.map(value => {
                 return (
                     <Comment
                         author={value.author}
                         avatar={value.avatar}
+                        key={value.modifyOn}
                         content={value.content}
                         datetime={formatDate(value.modifyOn, 'yyyy年MM月dd hh:mm:ss')}
                     >
@@ -30,21 +39,21 @@ const SubComment = (comments) => {
 }
 
 // 评论列表组件
-const CommentList = ({ comments, total, reply, handleShowSubComment }) => {
+const MessageList = ({ messages, total, reply, handleShowSubMessage }) => {
     return (
         <List
-            dataSource={comments}
+            dataSource={messages}
             header={`Has ${total} ${total > 1 ? 'replies' : 'reply'}`}
             itemLayout="horizontal"
             renderItem={(props) => (
                 <Comment
                     actions={[
-                        <span key="comment-nested-reply-to" onClick={reply.bind(this, [props.commentId, props.author])}>
+                        <span key="comment-nested-reply-to" onClick={reply.bind(this, [props.messageId ? props.messageId : props.commentId, props.author])}>
                             <Icon type="edit" style={{ marginRight: '5px' }} />回复
                         </span>,
-                        <span onClick={handleShowSubComment.bind(this, props.author)}>
-                            {props.subComment.length > 0 && !props.show ? `查看${props.subComment.length}条评论` :
-                                props.subComment.length > 0 ? '收起评论' : ''}
+                        <span onClick={handleShowSubMessage.bind(this, props.author)}>
+                            {props.sub.length > 0 && !props.show ? `查看${props.sub.length}条评论` :
+                                props.sub.length > 0 ? '收起评论' : ''}
                         </span>
                     ]}
                     author={props.author}
@@ -54,25 +63,23 @@ const CommentList = ({ comments, total, reply, handleShowSubComment }) => {
                 >
                     {props.show ?
                         (
-                            <StyleRoot>
-                                <SubComment {...props} style={styles.bounce} />
-                            </StyleRoot>
+                            <SubMessage {...props} />
                         ) : null}
                 </Comment>
-
             )}
         />
     )
 }
 
-export default ({ cRef }) => {
+export default ({ cRef, MessageUrl, routerParams }) => {
     const [visible, setVisible] = useState(false)
-    const [comments, setComments] = useState([])
+    const [params] = useState(routerParams ? routerParams : '')
+    const [messages, setMessages] = useState([])
     const [page, setPage] = useState(1)
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(0)
     const [submitting, setSubmitting] = useState(false)
-    const [commentInfo, setCommentInfo] = useState({
+    const [messageInfo, setMessageInfo] = useState({
         author: '',
         content: ''
     })
@@ -85,30 +92,38 @@ export default ({ cRef }) => {
         // 暴露给父组件更新评论的方法
         updateData: (val) => {
             setPage(val)
-            fetchData(val)
+            fetchData(val, MessageUrl, params)
             setCurrent(val)
         }
     }));
 
     // 获取评论数据
-    let fetchData = async (page) => {
+    let fetchData = async (page, url, params = {}) => {
+        let { articleId } = params
         try {
-            const result = await post('/comments/findAll', { page: page });
+            const result = await post(url, {
+                page,
+                articleId
+            });
             if (result.data.errorCode === 0) {
-                setComments(result.data.data)
+                result.data.data.forEach(value => {
+                    value.sub.sort((a, b) => {
+                        return b.modifyOn - a.modifyOn
+                    })
+                })
+                setMessages(result.data.data)
                 setTotal(result.data.total)
             } else {
-                message.error('评论数据获取失败 😖')
+                message.error('留言数据获取失败 😖')
             }
         } catch (error) {
-            message.error('评论数据获取失败 😖')
+            throw error
+            // message.error('数据获取失败 😖')
         }
-
-
     };
 
     // 页码改变回调
-    let onPageChange = (current, pageSize) => {
+    let onPageChange = (current) => {
         setPage(current)
         setCurrent(current)
     }
@@ -124,25 +139,52 @@ export default ({ cRef }) => {
     }
 
     // 子评论是否展示
-    let handleReplay = (author) => {
-        let _comments = comments.map(value => {
+    let handleShowSubMessage = (author) => {
+        let _messages = messages.map(value => {
             if (value.author === author) {
                 if (value.show) {
                     value.show = false
                 } else {
                     value.show = true
                 }
-
             }
             return value
         })
-        setComments(_comments)
-        // setShowSubComment(!showSubComment)
+        setMessages(_messages)
     }
 
+    // 回复留言
+    let handleMessageReply = async () => {
+        if (!messageInfo.author || !messageInfo.content) {
+            message.warning('你还没输入内容呢 😫')
+            return;
+        }
+        setSubmitting(true)
+        try {
+            let result = await post('/messages/addSubMessage', {
+                messageId: replayInfo.id,
+                ...messageInfo
+            })
+            if (result.data.errorCode === 0) {
+                message.success('留言成功 🥰')
+                fetchData(page, MessageUrl, params)
+                setVisible(false)
+                setSubmitting(false)
+            } else {
+                message.error('留言失败 😖')
+            }
+        } catch (error) {
+            message.error('留言失败 😖')
+        }
+        setMessageInfo({
+            author: '',
+            content: ''
+        })
+    };
+
     // 回复评论
-    let handleReply = async () => {
-        if (!commentInfo.author || !commentInfo.content) {
+    let handleCommentReply = async () => {
+        if (!messageInfo.author || !messageInfo.content) {
             message.warning('你还没输入内容呢 😫')
             return;
         }
@@ -150,37 +192,37 @@ export default ({ cRef }) => {
         try {
             let result = await post('/comments/addSubComment', {
                 commentId: replayInfo.id,
-                ...commentInfo
+                ...messageInfo
             })
             if (result.data.errorCode === 0) {
-                message.success('留言成功 🥰')
+                message.success('评论成功 🥰')
+                fetchData(page, MessageUrl, params)
+                setVisible(false)
+                setSubmitting(false)
             } else {
-                message.error('留言失败 😖')
+                message.error('评论失败 😖')
             }
         } catch (error) {
-            message.error('留言失败 😖')
+            message.error('评论失败 😖')
         }
-        setCommentInfo({
+        setMessageInfo({
             author: '',
             content: ''
         })
-        fetchData(page)
-        setVisible(false)
-        setSubmitting(false)
     };
 
     // 作者输入框改变事件
     let handleAuthorChange = e => {
-        setCommentInfo({
-            ...commentInfo,
+        setMessageInfo({
+            ...messageInfo,
             author: e.target.value
         })
     };
 
     // 内容输入框改变事件
     let handleContentChange = e => {
-        setCommentInfo({
-            ...commentInfo,
+        setMessageInfo({
+            ...messageInfo,
             content: e.target.value
         })
     };
@@ -191,42 +233,51 @@ export default ({ cRef }) => {
     }
 
     useEffect(() => {
-        fetchData(page)
-    }, [page]);
+        fetchData(page, MessageUrl, params)
+    }, [page, MessageUrl, params]);
 
     return (
-        <div>
+        <Container>
+
             {
-                comments.length > 0 &&
-                <CommentList
-                    comments={comments}
-                    total={total}
-                    reply={reply}
-                    handleShowSubComment={handleReplay} />}
-            <Modal
-                title="回复评论"
-                visible={visible}
-                footer={null}
-                onCancel={handleCancel}>
-                <Message
-                    handleContentChange={handleContentChange}
-                    handleAuthorChange={handleAuthorChange}
-                    onSubmit={handleReply}
-                    submitting={submitting}
-                    content={commentInfo.content}
-                    author={commentInfo.author}
-                    mentions={replayInfo.mentions}
-                />
-            </Modal>
-            <Pagination
-                defaultCurrent={page}
-                defaultPageSize={5}
-                current={current}
-                onChange={onPageChange}
-                total={total}
-                style={{ textAlign: 'center', margin: '10px 0px' }}
-            />
-        </div>
+                messages.length > 0 ?
+                    (
+                        <>
+                            <MessageList
+                                messages={messages}
+                                total={total}
+                                reply={reply}
+                                handleShowSubMessage={handleShowSubMessage} />
+                            <Modal
+                                title="回复评论"
+                                visible={visible}
+                                footer={null}
+                                onCancel={handleCancel}>
+                                <Message
+                                    handleContentChange={handleContentChange}
+                                    handleAuthorChange={handleAuthorChange}
+                                    params={params}
+                                    handleMessageReply={handleMessageReply}
+                                    handleCommentReply={handleCommentReply}
+                                    submitting={submitting}
+                                    content={messageInfo.content}
+                                    author={messageInfo.author}
+                                    mentions={replayInfo.mentions}
+                                />
+                            </Modal>
+                            <Pagination
+                                defaultCurrent={page}
+                                defaultPageSize={5}
+                                current={current}
+                                onChange={onPageChange}
+                                total={total}
+                                style={paginationStyle}
+                            />
+                        </>
+                    ) :
+                    <Empty description={'暂无评论'} />
+            }
+        </Container>
     );
 }
 

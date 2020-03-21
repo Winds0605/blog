@@ -46,6 +46,8 @@
 .App {
   text-align: center;
   overflow: hidden;
+  background-color: white;
+  margin: 0 auto;
 }
 
 .App-logo {
@@ -65,4 +67,8 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.ant-popover-content {
+  width: 400px;
 }

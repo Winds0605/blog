@@ -1,9 +1,6 @@
-import { bounce } from 'react-animations'
-import Radium from 'radium'
+import styled from 'styled-components'
 
-export const styles = {
-    bounce: {
-        animation: 'x 1s',
-        animationName: Radium.keyframes(bounce, 'bounce')
-    }
-}
+export const Container = styled.div`
+    height:100%;
+    margin-top:10px;
+`

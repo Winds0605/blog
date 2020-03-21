@@ -17,6 +17,31 @@ function formatDate (time, fmt) {
     return fmt;
 }
 
+
+function parseArticle (content) {
+    var toc = [];
+    var reg = /(?<!#+)(#{1,2})\s+?(.+?)\n/g;
+    var regExecRes = null
+    while ((regExecRes = reg.exec(content))) {
+        if (regExecRes[1].length)
+            toc.push({
+                level: regExecRes[1].length,
+                title: regExecRes[2]
+            });
+    }
+    return toc
+}
+
+
+function movieAarryFormat (arr) {
+    if (arr.length < 2) {
+        return arr[0]
+    }
+    return arr.join('/')
+}
+
 module.exports = {
-    formatDate
+    formatDate,
+    parseArticle,
+    movieAarryFormat
 }
