@@ -23,6 +23,34 @@ router.get('/findAll', async (ctx, next) => {
     }, "查询成功")
 })
 
+/**
+* @api {post} /articles/findByPage 分页数据
+* @apiDescription 分页数据
+* @apiName findByPage
+* @apiGroup Article
+* @apiVersion 1.0.0
+*/
+router.post('/findByPage', async (ctx, next) => {
+    const { page, tag } = ctx.request.body
+    console.log(page, tag)
+    const skip = (page - 1) * 10
+    let articles;
+    let len;
+    if (tag === 'All') {
+        articles = await Articles.find({}, "-_id -__v", { sort: [{ _id: -1 }] }).limit(10).skip(skip)
+        len = await Articles.find({}).countDocuments()
+    } else {
+        articles = await Articles.find({ tag }, "-_id -__v", { sort: [{ _id: -1 }] }).limit(10).skip(skip)
+        len = await Articles.find({ tag }).countDocuments()
+    }
+    ctx.response.set('expires', new Date(Date.now() + 2 * 60 * 1000).toString());
+    ctx.body = new Success({
+        data: articles,
+        total: len
+    }, "查询成功")
+})
+
+
 
 /**
 * @api {post} /articles/add 添加一篇文章

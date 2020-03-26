@@ -14,7 +14,7 @@ router.prefix('/tags')
 * @apiGroup Tags
 * @apiVersion 1.0.0
 */
-router.post('/findAll', async (ctx, next) => {
+router.get('/findAll', async (ctx, next) => {
     let tags = await Tags.find({}, "-_id -__v")
     let len = tags[0].length
     ctx.body = new Success({
