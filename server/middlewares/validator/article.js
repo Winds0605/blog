@@ -9,7 +9,9 @@ const validateAdd = async (ctx, next) => {
     const rule = {
         title: 'string',
         content: 'string',
-        desc: 'string'
+        desc: 'string',
+        banner: 'string',
+        tag: 'string'
     };
     const errors = parameter.validate(rule, ctx.request.body);
     if (errors) {
@@ -19,7 +21,7 @@ const validateAdd = async (ctx, next) => {
     }
 }
 
-const validateId = async (ctx, next) => {
+const validateFindById = async (ctx, next) => {
     const rule = {
         articleId: 'string',
     };
@@ -31,7 +33,25 @@ const validateId = async (ctx, next) => {
     }
 }
 
+const validateEdit = async (ctx, next) => {
+    const rule = {
+        articleId: 'string',
+        title: 'string',
+        content: 'string',
+        desc: 'string',
+        banner: 'string',
+        tag: 'string'
+    };
+    const errors = parameter.validate(rule, ctx.request.body);
+    if (errors) {
+        ctx.body = new ParameterException(errors)
+    } else {
+        await next()
+    }
+}
+
 module.exports = {
     validateAdd,
-    validateId
+    validateFindById,
+    validateEdit
 }

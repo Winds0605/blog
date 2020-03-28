@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const Movie = require('../../models/movie')
 const { Success } = require('../../util/http-exception')
+const { uuid } = require('../../util/util')
 
 let router = new Router();
 
@@ -33,7 +34,7 @@ router.post('/findAll', async (ctx, next) => {
 router.post('/add', async (ctx, next) => {
     const { name, image, director, country, type, rate, Introduction, review } = ctx.request.body
     const result = await Movie.create({
-        movieId: Math.floor(Math.random() * 10000000000),
+        movieId: uuid(10, 16),
         name,
         image,
         director,

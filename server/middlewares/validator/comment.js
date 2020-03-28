@@ -5,7 +5,8 @@ const parameter = new Parameter({
     validateRoot: true, // restrict the being validate value must be a object
 });
 
-const validateFindById = async (ctx, next) => {
+
+const validateFindComentsById = async (ctx, next) => {
     const rule = {
         page: 'number',
         articleId: 'string'
@@ -34,7 +35,7 @@ const validateInsertSubComments = async (ctx, next) => {
     }
 }
 
-const validateComments = async (ctx, next) => {
+const validateAddComments = async (ctx, next) => {
     const rule = {
         content: 'string',
         articleId: 'string',
@@ -48,8 +49,21 @@ const validateComments = async (ctx, next) => {
     }
 }
 
+const validateDeleteComments = async (ctx, next) => {
+    const rule = {
+        articleId: 'string'
+    };
+    const errors = parameter.validate(rule, ctx.request.body);
+    if (errors) {
+        ctx.body = new ParameterException(errors)
+    } else {
+        await next()
+    }
+}
+
 module.exports = {
-    validateFindById,
-    validateComments,
+    validateFindComentsById,
     validateInsertSubComments,
+    validateAddComments,
+    validateDeleteComments
 }

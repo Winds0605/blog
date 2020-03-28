@@ -7,6 +7,7 @@ const ArticlesSchema = new Schema({
     content: { type: String },
     desc: { type: String },
     tag: { type: String },
+    banner: { type: String },
     views: { type: Number, default: 0 },
     modifyOn: { type: Date, default: Date.now },
 })

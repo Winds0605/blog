@@ -2,10 +2,12 @@ const Router = require('koa-router');
 const Comments = require('../../models/comments')
 const { Success } = require('../../util/http-exception')
 const {
-    validateComments,
-    validateFindById,
-    validateInsertSubComments
+    validateAddComments,
+    validateFindComentsById,
+    validateInsertSubComments,
+    validateDeleteComments
 } = require('../../middlewares/validator/comment')
+const { uuid } = require('../../util/util')
 
 let router = new Router();
 
@@ -18,7 +20,7 @@ router.prefix('/comments')
 * @apiGroup Comments
 * @apiVersion 1.0.0
 */
-router.post('/findComentsById', validateFindById, async (ctx, next) => {
+router.post('/findComentsById', validateFindComentsById, async (ctx, next) => {
     // 第二个参数前面加-表示不返回这两个字段
     let { page, articleId } = ctx.request.body
     let skip = (page - 1) * 5
@@ -41,10 +43,10 @@ router.post('/findComentsById', validateFindById, async (ctx, next) => {
 * @apiParam {string} content 内容
 * @apiVersion 1.0.0
 */
-router.post('/add', validateComments, async (ctx, next) => {
+router.post('/add', validateAddComments, async (ctx, next) => {
     const { content, articleId, author } = ctx.request.body
     const result = await Comments.create({
-        commentId: Math.floor(Math.random() * 10000000000),
+        commentId: uuid(10, 16),
         articleId,
         avatar: 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',
         content,
@@ -52,6 +54,24 @@ router.post('/add', validateComments, async (ctx, next) => {
     })
     ctx.body = new Success(result, '添加成功');
 })
+
+
+/**
+* @api {post} /comments/delete 删除某篇文章的评论
+* @apiDescription 删除某篇文章的评论
+* @apiName findAll
+* @apiGroup Comments
+* @apiParam {string} author 留言者
+* @apiParam {string} articleId 文章id
+* @apiParam {string} content 内容
+* @apiVersion 1.0.0
+*/
+router.post('/delete', validateDeleteComments, async (ctx, next) => {
+    const { articleId } = ctx.request.body
+    const result = await Comments.deleteMany({ articleId })
+    ctx.body = new Success(result, '删除成功');
+})
+
 
 /**
 * @api {post} /comments/addSubComment 增加一条子留言
@@ -68,6 +88,7 @@ router.post('/addSubComment', validateInsertSubComments, async (ctx, next) => {
         {
             $addToSet: {
                 "sub": {
+                    subCommentId: uuid(10, 16),
                     author,
                     content,
                     avatar: 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',

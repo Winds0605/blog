@@ -10,15 +10,14 @@ const log = require('./middlewares/log')
 const app = new Koa()
 
 
-
-app.use(bodyParser())
-    .use(koaBody({
-        multipart: true,
-        formidable: {
-            maxFieldsSize: 10 * 1024 * 1024,
-            multipart: true
-        }
-    }))
+// koaBody 解析上传的文件
+app.use(koaBody({
+    multipart: true,
+    formidable: {
+        maxFieldsSize: 10 * 1024 * 1024,
+        multipart: true
+    }
+}))
     .use(cor)
     .use(log)
     .use(catchError)

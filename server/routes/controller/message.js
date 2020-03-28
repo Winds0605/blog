@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const Messages = require('../../models/messages')
 const { Success } = require('../../util/http-exception')
+const { uuid } = require('../../util/util')
 const {
     validateMessages,
     validateFindAll,
@@ -44,7 +45,7 @@ router.post('/findAll', validateFindAll, async (ctx, next) => {
 router.post('/add', validateMessages, async (ctx, next) => {
     const { author, content } = ctx.request.body
     const result = await Messages.create({
-        messageId: Math.floor(Math.random() * 10000000000),
+        messageId: uuid(10, 16),
         avatar: 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',
         author,
         content
@@ -67,6 +68,7 @@ router.post('/addSubMessage', validateInsertSubMessages, async (ctx, next) => {
         {
             $addToSet: {
                 "sub": {
+                    subMessageId: uuid(10, 16),
                     author,
                     content,
                     avatar: 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',
