@@ -49,9 +49,34 @@ const validateAddComments = async (ctx, next) => {
     }
 }
 
-const validateDeleteComments = async (ctx, next) => {
+const validateDeleteByArticleId = async (ctx, next) => {
     const rule = {
         articleId: 'string'
+    };
+    const errors = parameter.validate(rule, ctx.request.body);
+    if (errors) {
+        ctx.body = new ParameterException(errors)
+    } else {
+        await next()
+    }
+}
+
+// deleteByCommentId
+const validateDeleteByCommentId = async (ctx, next) => {
+    const rule = {
+        commentId: 'string'
+    };
+    const errors = parameter.validate(rule, ctx.request.body);
+    if (errors) {
+        ctx.body = new ParameterException(errors)
+    } else {
+        await next()
+    }
+}
+
+const validateDeleteSubCommentByCommentId = async (ctx, next) => {
+    const rule = {
+        subId: 'string'
     };
     const errors = parameter.validate(rule, ctx.request.body);
     if (errors) {
@@ -65,5 +90,7 @@ module.exports = {
     validateFindComentsById,
     validateInsertSubComments,
     validateAddComments,
-    validateDeleteComments
+    validateDeleteByArticleId,
+    validateDeleteByCommentId,
+    validateDeleteSubCommentByCommentId
 }

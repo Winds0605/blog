@@ -5,7 +5,9 @@ const {
     validateAddComments,
     validateFindComentsById,
     validateInsertSubComments,
-    validateDeleteComments
+    validateDeleteByArticleId,
+    validateDeleteByCommentId,
+    validateDeleteSubCommentByCommentId
 } = require('../../middlewares/validator/comment')
 const { uuid } = require('../../util/util')
 
@@ -22,9 +24,9 @@ router.prefix('/comments')
 */
 router.post('/findComentsById', validateFindComentsById, async (ctx, next) => {
     // 第二个参数前面加-表示不返回这两个字段
-    let { page, articleId } = ctx.request.body
-    let skip = (page - 1) * 5
-    let tags = await Comments.find({ articleId }, "-_id -__v", { sort: [{ _id: -1 }] }).limit(5).skip(skip)
+    let { page, articleId, pageSize } = ctx.request.body
+    let skip = (page - 1) * (pageSize || 5)
+    let tags = await Comments.find({ articleId }, "-_id -__v", { sort: [{ _id: 1 }] }).limit(pageSize).skip(skip)
     let len = await Comments.find({ articleId }).countDocuments()
     ctx.body = new Success({
         data: tags,
@@ -57,18 +59,67 @@ router.post('/add', validateAddComments, async (ctx, next) => {
 
 
 /**
-* @api {post} /comments/delete 删除某篇文章的评论
+* @api {post} /comments/deleteByArticleId 删除某篇文章的评论
 * @apiDescription 删除某篇文章的评论
 * @apiName findAll
 * @apiGroup Comments
-* @apiParam {string} author 留言者
 * @apiParam {string} articleId 文章id
-* @apiParam {string} content 内容
 * @apiVersion 1.0.0
 */
-router.post('/delete', validateDeleteComments, async (ctx, next) => {
+router.post('/deleteByArticleId', validateDeleteByArticleId, async (ctx, next) => {
     const { articleId } = ctx.request.body
     const result = await Comments.deleteMany({ articleId })
+    ctx.body = new Success(result, '删除成功');
+})
+
+/**
+* @api {post} /comments/deleteByCommentId 删除某个评论
+* @apiDescription 删除某个评论
+* @apiName deleteByCommentId
+* @apiGroup Comments
+* @apiParam {string} commentId 文章id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteByCommentId', validateDeleteByCommentId, async (ctx, next) => {
+    const { commentId } = ctx.request.body
+    const result = await Comments.deleteOne({ commentId })
+    ctx.body = new Success(result, '删除成功');
+})
+
+/**
+* @api {post} /comments/deleteByCommentId 删除某个评论
+* @apiDescription 删除某个评论
+* @apiName deleteByCommentId
+* @apiGroup Comments
+* @apiParam {string} commentId 文章id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteByCommentId', validateDeleteByCommentId, async (ctx, next) => {
+    const { commentId } = ctx.request.body
+    const result = await Comments.deleteOne({ commentId })
+    ctx.body = new Success(result, '删除成功');
+})
+
+/**
+* @api {post} /comments/deleteSubCommentByCommentId 删除某个子评论
+* @apiDescription 删除某个子评论
+* @apiName deleteSubCommentByCommentId
+* @apiGroup Comments
+* @apiParam {string} subId 子评论id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteSubCommentByCommentId', validateDeleteSubCommentByCommentId, async (ctx, next) => {
+    const { subId } = ctx.request.body
+    const result = await Comments.updateOne(
+        { "sub.subId": subId },
+        {
+            $pull: {
+                'sub': {
+                    subId: subId
+                }
+            }
+        }
+    )
     ctx.body = new Success(result, '删除成功');
 })
 
@@ -79,19 +130,21 @@ router.post('/delete', validateDeleteComments, async (ctx, next) => {
 * @apiName addSubMessage
 * @apiGroup Comment
 * @apiParam {string} messageId 被回复的留言id
+* @apiParam {string} author 回复人
+* @apiParam {string} content 回复内容
 * @apiVersion 1.0.0
 */
 router.post('/addSubComment', validateInsertSubComments, async (ctx, next) => {
-    const { commentId, content, author } = ctx.request.body
+    const { commentId, content, author, avatar } = ctx.request.body
     const result = await Comments.updateOne(
         { commentId },
         {
             $addToSet: {
                 "sub": {
-                    subCommentId: uuid(10, 16),
+                    subId: uuid(10, 16),
                     author,
                     content,
-                    avatar: 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',
+                    avatar: avatar || 'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png',
                     modifyOn: Date.now()
                 }
             }
