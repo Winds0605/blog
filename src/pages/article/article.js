@@ -1,9 +1,9 @@
 import 'App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Container, Sider, ArticleContainer, ArticleHeader, ArticleTitle, ArticleInfo, CommentContainer, LinkContainer } from './style'
-import { Icon, Tag, message, Anchor, Avatar, Input, Button, Row, Col } from 'antd'
+import { Icon, Tag, message, Anchor, Avatar, Input, Button, Row, Col, Divider, PageHeader } from 'antd'
 import HeadingBlock from "utils/HeadingBlock"
 import CodeBlock from 'utils/CodeBlock'
 import Comment from 'components/Comment/'
@@ -33,6 +33,7 @@ export default () => {
         author: ''
     })
     const commentEl = useRef();
+    const history = useHistory()
     const INITCOMMENT = 1;
     const MessageUrl = '/comments/findComentsById'
 
@@ -96,12 +97,22 @@ export default () => {
         })
     }
 
+    const back = () => {
+        history.goBack()
+    }
+
     useEffect(() => {
         loadData(routerParams.articleId)
     }, [routerParams.articleId])
 
     return (
         <Container>
+            <PageHeader
+                className="site-page-header"
+                onBack={back}
+                title="返回"
+                subTitle="文章详情"
+            />
             <ArticleContainer>
                 <ArticleHeader>
                     <ArticleTitle className="iconfot">{data.title}</ArticleTitle>
@@ -124,7 +135,7 @@ export default () => {
                 >
                 </ReactMarkdown>
                 <CommentContainer>
-                    <h1>- 评论 -</h1>
+                    <Divider>评论区</Divider>
                     <Row gutter={8} justify="space-between" className={'commentArea'}>
                         <Col className="gutter-row" span={2}>
                             <Avatar size="large" src={'https://markdowncun.oss-cn-beijing.aliyuncs.com/markdown/images.png'} className={'avatar'} />

@@ -19,5 +19,6 @@ export const Name = styled.div`
 
 export const IconArea = styled.div`
     width:100%;
+    height:50px;
     margin:15px 0px;
 `

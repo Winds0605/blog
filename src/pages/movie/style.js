@@ -1,57 +1,41 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-    width:80%;
-    margin:20px auto;
+    width:50%;
+    margin:20px auto 0;
+    background-color:white;
+    overflow:hidden;
+    border-radius:3px;
+    .ant-pagination {
+        margin:20px 0;
+    }
+`
+
+export const WaterImg = styled.img`
+    height:20%;
+`
+
+export const Article = styled.div`
+    display: flex;
     flex-wrap: wrap;
-    display:flex;
-    justify-content: space-between;
-    .movie-item{
-        height:250px;
-        width:45%;
-        margin-top:20px;
-        float:left;
-        text-align:left;
-        font-size:12px;
-        .ant-card-body{
-            height:100%;
-            padding:20px;
-        }
-        .text{
-            padding:10px 0;
-            display: flex;
-            height: 100%;
-            flex-direction: column;
-        }
-        img{
-            height:100%;
-            float:left;
-            margin-right:10px;
-        }
-        .name{
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .name,
-        .type,
-        .rate,
-        .director,
-        .country{
-            flex:1;
-        }
-        .desc{
-            flex:3;
-            display:flex;
-            align-items:center;
-            justify-content: space-around;
-            .btn{
-                width:100px;
-            }
-        }
+    justify-content: space-around
+    width: 100%;
+    img{
+        height:250px
     }
 
-    .more {
-        margin-top:20px;
+`
+
+export const MovieItem = styled.div`
+    width:35%
+    margin:20px 0;
+    cursor:pointer;
+    .name{
+        margin-top:10px;
+        display:inline-block;
+        width:70%;
+    }
+    .name:hover{   
+        text-decoration: underline;
     }
 `

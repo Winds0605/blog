@@ -1,17 +1,29 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-    width:80%;
-    margin:100px auto;
+    
+    
+    
+    overflow:hidden;
+    
 `
 
 export const Middle = styled.div`
-border-radius:5px;
-padding:40px 10px;
-box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
-&:hover {
-    box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
-}
+    border-radius:2px;
+    width:50%;
+    background:white;
+    margin:20px auto;
+    padding:10px 10px;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
+    .ant-pagination {
+        margin-bottom:20px;
+    }
+    .ant-empty {
+        margin:50px 8px;
+    }
 `
 
 export const Right = styled.div`
@@ -26,7 +38,7 @@ export const Right = styled.div`
 
 export const BlogItem = styled.div`
     position:relative;
-    margin-bottom:40px;
+    margin-bottom:25px;
     padding:20px;
     border-radius:5px;
     color:#797979;

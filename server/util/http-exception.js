@@ -36,10 +36,20 @@ class NotFound extends HttpException {
     }
 }
 
+class Forbid extends HttpException {
+    constructor(msg, errorCode) {
+        super()
+        this.code = 403
+        this.msg = msg || '资源已存在'
+        this.errorCode = errorCode || 10000
+    }
+}
+
 
 module.exports = {
     HttpException,
     ParameterException,
     Success,
-    NotFound
+    NotFound,
+    Forbid
 }

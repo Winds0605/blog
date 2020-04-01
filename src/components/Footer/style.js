@@ -3,9 +3,9 @@ import styled from 'styled-components'
 export const Footer = styled.div`
     margin-top:100px;
     height:100px;
-    width:80%;
-    margin:0 auto;
-    border-top:1px solid #DDDDDD;
+    width:50%;
+    margin:20px auto 0;
+    font-size:12px;
 `
 
 export const Text = styled.p`

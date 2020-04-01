@@ -1,5 +1,7 @@
+import { createFromIconfontCN } from '@ant-design/icons'
 
-function formatDate (time, fmt) {
+
+export function formatDate (time, fmt) {
     var o = {
         "M+": new Date(time).getMonth() + 1,                 //月份   
         "d+": new Date(time).getDate(),                    //日   
@@ -18,7 +20,7 @@ function formatDate (time, fmt) {
 }
 
 
-function parseArticle (content) {
+export function parseArticle (content) {
     var toc = [];
     var reg = /(?<!#+)(#{1,2})\s+?(.+?)\n/g;
     var regExecRes = null
@@ -33,15 +35,43 @@ function parseArticle (content) {
 }
 
 
-function movieAarryFormat (arr) {
+export function movieAarryFormat (arr) {
     if (arr.length < 2) {
         return arr[0]
     }
     return arr.join('/')
 }
 
-module.exports = {
-    formatDate,
-    parseArticle,
-    movieAarryFormat
+
+export function scrollAnimation (currentY, targetY) {
+    // 获取当前位置方法
+    // const currentY = document.documentElement.scrollTop || document.body.scrollTop
+
+    // 计算需要移动的距离
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+        // 一次调用滑动帧数，每次调用会不一样
+        const dist = Math.ceil(needScrollTop / 10)
+        _currentY += dist
+        window.scrollTo(_currentY, currentY)
+        // 如果移动幅度小于十个像素，直接移动，否则递归调用，实现动画效果
+        if (needScrollTop > 10 || needScrollTop < -10) {
+            scrollAnimation(_currentY, targetY)
+        } else {
+            window.scrollTo(_currentY, targetY)
+        }
+    }, 1)
 }
+
+export const getPageStartAndEnd = (p, s) => {
+    let start = (p - 1) * s
+    let end = (p - 1) * s + s
+    return {
+        start, end
+    }
+}
+
+export const MyIcon = createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/font_1597339_gsprebsthtv.js'
+});

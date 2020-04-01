@@ -1,69 +1,125 @@
-import React, { useEffect, useState } from 'react'
-import { Container } from './style'
-import { Rate, Card, Tooltip, Popover, Button, message } from 'antd'
-import { post } from 'utils/http'
-import { movieAarryFormat } from 'utils/util'
+import React, { useEffect, useState, useRef } from 'react'
+import Header from 'components/Header/index'
+import { Container, Article, MovieItem } from './style'
+import { message, Pagination, Tabs, Empty } from 'antd'
+import { getPageStartAndEnd, scrollAnimation } from 'utils/util'
+import { get } from 'utils/http'
+
+const { TabPane } = Tabs;
 
 export default () => {
+    const [movies, setMovies] = useState([])
+    const [currentTabsMovie, setCurrentTabsMovie] = useState([])
+    const [currentTabsDisplayMovie, setCurrentTabsDisplayMovie] = useState([])
+    const [tags, setTags] = useState([])
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
 
-    const [movie, setMovie] = useState([])
-    const [displayMovieLength, setDisplayMovieLength] = useState(8)
-    const [allMovieLength, setAllMovieLength] = useState(0)
+    const INIT_PAGE_SIZE = 10
+    const SCROLL_DISTANCE = 380
 
     let loadData = async (length) => {
+        let movies;
+        let tags;
         try {
-            const result = await post('/movies/findAll', {
-                length
-            })
-            setMovie(result.data.data)
-            // 设置所有电影长度
-            setAllMovieLength(result.data.total)
-            // 设置展示电影长度
-            setDisplayMovieLength(result.data.data.length)
+            movies = await get('/movies/findAll')
+            tags = await get('/tags/movieTasfindAll')
         } catch (error) {
             message.error('获取电影数据失败')
         }
+        setTags(["全部", ...tags.data.data.map(value => value.type)])
+        // 全部电影数据
+        setMovies(movies.data.data)
+        // 当前tab所有电影数据
+        setCurrentTabsMovie(movies.data.data)
+        // 当前tab展示电影数据
+        setCurrentTabsDisplayMovie(movies.data.data.slice(0, INIT_PAGE_SIZE))
+        // 设置所有电影长度
+        setTotal(movies.data.total)
     }
 
-    let loadMore = () => {
-        loadData(displayMovieLength + 8)
+    const tabSwitch = (current) => {
+        const { start, end } = getPageStartAndEnd(page, pageSize)
+
+        if (current === '全部') {
+            setTotal(movies.length)
+            setCurrentTabsMovie(movies)
+            setCurrentTabsDisplayMovie(movies.slice(start, end))
+            return
+        }
+        const display = movies.filter(value => {
+            return value.type.includes(current)
+        })
+        setTotal(display.length)
+        setCurrentTabsMovie(display)
+        setCurrentTabsDisplayMovie(display.slice(start, end))
     }
+
+    const onShowSizeChange = (current, size) => {
+        setPageSize(size)
+        const { start, end } = getPageStartAndEnd(current, size)
+        setCurrentTabsDisplayMovie(currentTabsMovie.slice(start, end))
+        scrollAnimation(document.documentElement.scrollTop || document.body.scrollTop, SCROLL_DISTANCE)
+    }
+
+    const onPageChange = (page, pageSize) => {
+        setPage(page)
+        const { start, end } = getPageStartAndEnd(page, pageSize)
+        setCurrentTabsDisplayMovie(currentTabsMovie.slice(start, end))
+        scrollAnimation(document.documentElement.scrollTop || document.body.scrollTop, SCROLL_DISTANCE)
+    }
+
+    const showTotal = total => {
+        return `Total ${total} items`;
+    }
+
 
     useEffect(() => {
-        loadData(displayMovieLength)
-    }, [displayMovieLength])
+        loadData()
+    }, [])
 
-    return <>
-        <Container>
-            {
-                movie.map(value => {
-                    return (
-                        <Card className="movie-item" key={value.movieId}>
-                            <img src={value.image} alt={value.name} />
-                            <div className="text">
-                                <Tooltip placement="topLeft" title={value.name}>
-                                    <div className="name">影名：<span>{value.name}</span></div>
-                                </Tooltip>
-                                <div className="director">导演：<span>{value.director}</span></div>
-                                <div className="country">国家：<span>{movieAarryFormat(value.country)}</span></div>
-                                <div className="type">类型：<span>{movieAarryFormat(value.type)}</span></div>
-                                <div className="rate">评分：<Rate allowHalf disabled defaultValue={7.5} /></div>
-                                <div className="desc">
-                                    <Popover placement="bottom" content={value.Introduction} trigger="click">
-                                        <Button className="btn">简介</Button>
-                                    </Popover>
-                                    <Popover placement="bottom" content={value.review} trigger="click">
-                                        <Button className="btn">影评</Button>
-                                    </Popover>
-                                </div>
-                            </div>
-                        </Card>
-                    )
-                })
-            }
-            {
-                displayMovieLength === allMovieLength ? <></> : (<Button block className="more" onClick={loadMore}>加 载 更 多</Button>)
-            }
-        </Container>
-    </>
+    return (
+        <>
+            <Header />
+            <Container>
+                <Tabs defaultActiveKey="1" tabPosition={'top'} onChange={tabSwitch}>
+                    {
+                        tags.map(value => (
+                            <TabPane tab={value} key={value}>
+                                <Article>
+                                    {
+                                        currentTabsDisplayMovie.length > 0 ? currentTabsDisplayMovie.map(value => {
+                                            return (
+                                                <MovieItem key={value.name}>
+                                                    <img src={value.image} alt={value.name} />
+                                                    <div className="text">
+                                                        <div className="name"><span>{value.name}</span></div>
+                                                    </div>
+                                                </MovieItem>
+                                            )
+                                        }) : <Empty />
+                                    }
+                                </Article>
+                            </TabPane>
+                        )
+                        )
+                    }
+                </Tabs>
+                {
+                    currentTabsDisplayMovie.length > 0 ? <Pagination
+                        size="small"
+                        showSizeChanger
+                        showQuickJumper
+                        total={total}
+                        defaultPageSize={10}
+                        onChange={onPageChange}
+                        showTotal={showTotal}
+                        pageSizeOptions={['10', '20', '30']}
+                        onShowSizeChange={onShowSizeChange}
+                    /> : null
+                }
+            </Container>
+        </>
+    )
 }

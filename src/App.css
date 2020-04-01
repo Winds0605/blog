@@ -45,8 +45,7 @@
 
 .App {
   text-align: center;
-  overflow: hidden;
-  background-color: white;
+  background-color: #393939;
   margin: 0 auto;
 }
 
@@ -71,4 +70,11 @@
 
 .ant-popover-content {
   width: 400px;
+}
+
+.back-top {
+  background-color: white;
+  font-size: 30px;
+  border-radius: 50%;
+  line-height: 35px;
 }

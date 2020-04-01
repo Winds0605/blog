@@ -72,7 +72,7 @@ export const Heart = styled.div`
     height: 25px;
     float:left;
     position: absolute;
-    top: 50%;
+    top: 10%;
 
     ul {
       height: 20px;

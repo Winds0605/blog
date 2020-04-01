@@ -1,108 +1,146 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Tabs, Tag } from 'antd'
-import { Container, Middle, Right, BlogItem, Classif } from './style'
+import React, { useEffect, useState, useRef } from 'react'
+import { Container, Middle, BlogItem } from './style'
+import { Tabs, Pagination, Empty } from 'antd'
+import Header from 'components/Header'
 import { Link } from 'react-router-dom'
-import Character from 'components/Character/'
-import { get, post } from 'utils/http.js'
-import { formatDate } from 'utils/util'
-
-const { CheckableTag } = Tag;
+import { get } from 'utils/http.js'
+import { formatDate, scrollAnimation, getPageStartAndEnd } from 'utils/util'
 
 const { TabPane } = Tabs;
 
-function callback (key) {
-    console.log(key);
-}
-
-function handleChange (tag, checked) {
-    console.log(tag, checked)
-    // const { selectedTags } = this.state;
-    // const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
-    // console.log('You are interested in: ', nextSelectedTags);
-    // this.setState({ selectedTags: nextSelectedTags });
-}
-
 export default () => {
-    const [data, setData] = useState([]);
+    const [articles, setArticles] = useState([])
+    const [displayArticles, setDisplayArticles] = useState([])
+    const [currentDisplayArticles, setCurrentDisplayArticles] = useState([])
     const [tags, setTags] = useState([]);
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
+
+
+    const INIT_PAGE_SIZE = 5
+    const SCROLL_DISTANCE = 380
+    const article = useRef()
+
+    const loadData = async () => {
+        let result = await get('/articles/findAll');
+        let tags = await get('/tags/articleTasfindAll')
+        setTotal(result.data.total)
+        // 全部数据
+        setArticles(result.data.data)
+        // 当前标签的数据
+        setDisplayArticles(result.data.data)
+        // 当前标签展示的数据
+        setCurrentDisplayArticles(result.data.data.slice(0, INIT_PAGE_SIZE))
+
+        tags = tags.data.data.map(value => {
+            return value.type
+        })
+        setTags(['全部', ...tags])
+    }
+
+    const tabSwitch = (current) => {
+        const { start, end } = getPageStartAndEnd(page, pageSize)
+
+        if (current === '全部') {
+            setTotal(articles.length)
+            setDisplayArticles(articles)
+            setCurrentDisplayArticles(articles.slice(start, end))
+            return
+        }
+        const display = articles.filter(value => {
+            return value.tag === current
+        })
+        setTotal(display.length)
+        setDisplayArticles(display)
+        setCurrentDisplayArticles(display.slice(start, end))
+    }
+
+    const onShowSizeChange = (current, size) => {
+        setPageSize(size)
+        const { start, end } = getPageStartAndEnd(current, size)
+        setCurrentDisplayArticles(displayArticles.slice(start, end))
+        scrollAnimation(document.documentElement.scrollTop || document.body.scrollTop, SCROLL_DISTANCE)
+    }
+
+    const onPageChange = (page, pageSize) => {
+        setPage(page)
+        const { start, end } = getPageStartAndEnd(page, pageSize)
+        setCurrentDisplayArticles(displayArticles.slice(start, end))
+        scrollAnimation(document.documentElement.scrollTop || document.body.scrollTop, SCROLL_DISTANCE)
+    }
+
+    const showTotal = total => {
+        return `Total ${total} items`;
+    }
+
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await get('/articles/findAll');
-            const tags = await post('/tags/findAll')
-            setData(result.data.data)
-            setTags(tags.data.data[0].tags)
-        };
-        fetchData()
+        loadData()
     }, []);
 
     return (
-        <Container>
-            <Row gutter={16} height={100}>
-                <Col className="gutter-row" span={6}>
-                    {/* <Affix offsetTop={10}> */}
-                    <Character />
-                    <Right>
-                        <Tabs defaultActiveKey="1" onChange={callback}>
-                            <TabPane tab="最新文章" key="1">
-                                Content of Tab Pane 1
-                                </TabPane>
-                            <TabPane tab="最热文章" key="2">
-                                Content of Tab Pane 2
-                                </TabPane>
-                            <TabPane tab="推荐文章" key="3">
-                                Content of Tab Pane 3
-                                </TabPane>
-                        </Tabs>
-                    </Right>
-                    <Classif>
+        <>
+            <Header />
+            <Container>
+                <Middle ref={article}>
+                    <Tabs defaultActiveKey="1" tabPosition={'top'} onChange={tabSwitch}>
                         {
-                            // console.log(tags)
-                            tags.map(value => {
-                                return (
-                                    <CheckableTag checked key={value} className="tag" onChange={checked => handleChange(value, checked)}>{value}</CheckableTag>
-                                )
-                            })
+                            tags.map(value => (
+                                <TabPane tab={value} key={value}>
+                                    {
+                                        currentDisplayArticles.length > 0 ?
+                                            (currentDisplayArticles.map(value => {
+                                                return (
+                                                    <BlogItem key={value.articleId}>
+                                                        <div className="desc">
+                                                            <span className="tag">{value.tag}</span>
+                                                            <span className="time">{formatDate(value.modifyOn, 'yyyy-MM-dd')}</span>
+                                                            <Link to={`/blog/${value.articleId}`}>
+                                                                <h1>{value.title}</h1>
+                                                            </Link>
+                                                        </div>
+                                                        <div className="image">
+                                                            <img src={value.banner} alt="" />
+                                                        </div>
+                                                        <div className="content">
+                                                            <p>
+                                                                {value.desc}
+                                                            </p>
+                                                        </div>
+                                                        <Link to={`/blog/${value.articleId}`} key={value.articleId}>
+                                                            <div className="footer">
+                                                                <p>- 阅读全文 -</p>
+                                                            </div>
+                                                        </Link>
+                                                    </BlogItem>
+                                                )
+                                            }))
+                                            : <Empty />
+                                    }
+                                </TabPane>
+                            )
+                            )
                         }
-                    </Classif>
-                    {/* </Affix> */}
-                </Col>
+                    </Tabs>
 
-                <Col className="gutter-row" span={18}>
-                    <Middle>
-                        {
-                            data.map(value => {
-                                return (
-                                    // 
-                                    <BlogItem key={value.articleId}>
-                                        <div className="desc">
-                                            <span className="tag">{value.tag}</span>
-                                            <span className="time">{formatDate(value.modifyOn, 'yyyy-MM-dd')}</span>
-                                            <Link to={`/blog/${value.articleId}`}>
-                                                <h1>{value.title}</h1>
-                                            </Link>
-                                        </div>
-                                        <div className="image">
-                                            <img src={value.banner} alt="" />
-                                        </div>
-                                        <div className="content">
-                                            <p>
-                                                {value.desc}
-                                            </p>
-                                        </div>
-                                        <Link to={`/blog/${value.articleId}`} key={value.articleId}>
-                                            <div className="footer">
-                                                <p>- 阅读全文 -</p>
-                                            </div>
-                                        </Link>
-                                    </BlogItem>
-                                    // </Link>
-                                )
-                            })
-                        }
-                    </Middle>
-                </Col>
-            </Row>
-        </Container>
+                    {
+                        currentDisplayArticles.length > 0 ?
+                            <Pagination
+                                size="small"
+                                showSizeChanger
+                                showQuickJumper
+                                total={total}
+                                defaultPageSize={5}
+                                onChange={onPageChange}
+                                showTotal={showTotal}
+                                pageSizeOptions={['5', '10', '15', '20']}
+                                onShowSizeChange={onShowSizeChange}
+                            /> : null
+                    }
+                </Middle>
+            </Container >
+        </>
+
     )
 }

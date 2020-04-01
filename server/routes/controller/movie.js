@@ -8,16 +8,16 @@ let router = new Router();
 router.prefix('/movies')
 
 /**
-* @api {post} /movies/findAll 获取所有电影数据
+* @api {get} /movies/findAll 获取所有电影数据
 * @apiDescription 获取所有电影数据
 * @apiName findAll
 * @apiGroup Movies
 * @apiVersion 1.0.0
 */
-router.post('/findAll', async (ctx, next) => {
-    const { length } = ctx.request.body
-    let movies = await Movie.find({}, "-_id -__v", { sort: [{ _id: -1 }] }).limit(length)
+router.get('/findAll', async (ctx, next) => {
+    let movies = await Movie.find({}, "-_id -__v", { sort: [{ _id: -1 }] })
     let len = await Movie.find({}).countDocuments()
+    console.log(len)
     ctx.body = new Success({
         data: movies,
         total: len
