@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react'
 import { Drawer, Tooltip, Icon, Modal, Button, message } from 'antd'
-import Comment from 'components/Comment/'
-import Message from 'components/Message'
+import Comment from 'components/comment/'
+import Message from 'components/message'
 import { Draw } from './style'
 import { post } from 'utils/http'
+import { MEfindAll } from 'route/message'
 
 const IconFont = Icon.createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1597339_u91q9e97qgo.js',
@@ -19,7 +20,7 @@ export default () => {
     })
     const inputEl = useRef();
     const INITCOMMENT = 1;
-    const MessageUrl = '/messages/findAll'
+    const MessageUrl = MEfindAll
 
     // 提交留言
     let handleSubmit = async () => {

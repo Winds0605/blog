@@ -119,11 +119,16 @@ router.post('/delete', validateFindById, hasArticle, async (ctx, next) => {
 })
 
 /**
-* @api {post} /articles/delete 删除一篇文章
-* @apiDescription 删除一篇文章
-* @apiName delete
+* @api {post} /articles/edit 编辑一篇文章
+* @apiDescription 编辑一篇文章
+* @apiName edit
 * @apiGroup Article
 * @apiParam {string} articleId 文章id
+* @apiParam {string} title 文章标题
+* @apiParam {string} content 文章内容
+* @apiParam {string} desc 文章简介
+* @apiParam {string} banner 文章图片
+* @apiParam {string} tag 文章标签
 * @apiVersion 1.0.0
 */
 router.post('/edit', validateEdit, hasArticle, async (ctx, next) => {

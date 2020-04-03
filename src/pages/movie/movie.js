@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
-import Header from 'components/Header/index'
+import { Link } from 'react-router-dom'
+import Header from 'components/header/index'
 import { Container, Article, MovieItem } from './style'
 import { message, Pagination, Tabs, Empty } from 'antd'
 import { getPageStartAndEnd, scrollAnimation } from 'utils/util'
 import { get } from 'utils/http'
+// 路由
+import { MOfindAll } from 'route/movie'
+import { TAmovieTagsfindAll } from 'route/tags'
 
 const { TabPane } = Tabs;
 
@@ -23,8 +27,8 @@ export default () => {
         let movies;
         let tags;
         try {
-            movies = await get('/movies/findAll')
-            tags = await get('/tags/movieTasfindAll')
+            movies = await get(MOfindAll)
+            tags = await get(TAmovieTagsfindAll)
         } catch (error) {
             message.error('获取电影数据失败')
         }
@@ -91,11 +95,14 @@ export default () => {
                                     {
                                         currentTabsDisplayMovie.length > 0 ? currentTabsDisplayMovie.map(value => {
                                             return (
+
                                                 <MovieItem key={value.name}>
-                                                    <img src={value.image} alt={value.name} />
-                                                    <div className="text">
-                                                        <div className="name"><span>{value.name}</span></div>
-                                                    </div>
+                                                    <Link to={`/movie/${value.movieId}`}>
+                                                        <img src={value.image} alt={value.name} />
+                                                        <div className="text">
+                                                            <div className="name"><span>{value.name}</span></div>
+                                                        </div>
+                                                    </Link>
                                                 </MovieItem>
                                             )
                                         }) : <Empty />

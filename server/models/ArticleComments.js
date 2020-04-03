@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const CommentSchema = new Schema({
+const ArticleCommentSchema = new Schema({
     commentId: { type: String },
     articleId: { type: String },
     author: { type: String },
@@ -11,5 +11,5 @@ const CommentSchema = new Schema({
     modifyOn: { type: Date, default: Date.now },
 })
 
-const Comments = mongoose.model('comment', CommentSchema);
-module.exports = Comments
+const Model = mongoose.model('article_comment', ArticleCommentSchema);
+module.exports = Model

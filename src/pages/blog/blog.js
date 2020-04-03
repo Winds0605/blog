@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Container, Middle, BlogItem } from './style'
 import { Tabs, Pagination, Empty } from 'antd'
-import Header from 'components/Header'
+import Header from 'components/header'
 import { Link } from 'react-router-dom'
 import { get } from 'utils/http.js'
 import { formatDate, scrollAnimation, getPageStartAndEnd } from 'utils/util'
+// 路由
+import { ARfindAll } from 'route/article'
+import { TAarticleTagsfindAll } from 'route/tags'
+
 
 const { TabPane } = Tabs;
 
@@ -23,8 +27,8 @@ export default () => {
     const article = useRef()
 
     const loadData = async () => {
-        let result = await get('/articles/findAll');
-        let tags = await get('/tags/articleTasfindAll')
+        let result = await get(ARfindAll);
+        let tags = await get(TAarticleTagsfindAll)
         setTotal(result.data.total)
         // 全部数据
         setArticles(result.data.data)

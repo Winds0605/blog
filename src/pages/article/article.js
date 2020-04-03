@@ -1,14 +1,18 @@
-import 'App.css'
+// import 'App.css'
 import React, { useState, useEffect, useRef } from 'react'
-import ReactMarkdown from 'react-markdown'
 import { useParams, useHistory } from 'react-router-dom'
+
 import { Container, Sider, ArticleContainer, ArticleHeader, ArticleTitle, ArticleInfo, CommentContainer, LinkContainer } from './style'
 import { Icon, Tag, message, Anchor, Avatar, Input, Button, Row, Col, Divider, PageHeader } from 'antd'
+import ReactMarkdown from 'react-markdown'
 import HeadingBlock from "utils/HeadingBlock"
 import CodeBlock from 'utils/CodeBlock'
-import Comment from 'components/Comment/'
+import Comment from 'components/comment'
 import { formatDate, parseArticle } from 'utils/util'
 import { post } from 'utils/http.js'
+// 路由
+import { ACfindComentsById, ACadd } from 'route/articleComments.js'
+import { ARfindById, ARaddViews } from 'route/article'
 
 const { Link } = Anchor;
 const { TextArea } = Input
@@ -23,7 +27,6 @@ const indent = (level) => {
 }
 
 
-
 export default () => {
     const routerParams = useParams()
     const [data, setData] = useState([])
@@ -35,17 +38,17 @@ export default () => {
     const commentEl = useRef();
     const history = useHistory()
     const INITCOMMENT = 1;
-    const MessageUrl = '/comments/findComentsById'
+    const MessageUrl = ACfindComentsById
 
     // 加载页面数据
     let loadData = async (articleId) => {
         window.scrollTo(0, -1)
         try {
-            let result = await post('/articles/findById', {
+            let result = await post(ARfindById, {
                 articleId
             });
 
-            let addResult = await post('/articles/addViews', {
+            let addResult = await post(ARaddViews, {
                 articleId
             });
 
@@ -66,7 +69,7 @@ export default () => {
             message.warning('还未填写评论信息');
         }
         try {
-            let result = await post('/comments/add', {
+            let result = await post(ACadd, {
                 articleId: routerParams.articleId,
                 ...comment
             })

@@ -16,7 +16,7 @@ router.prefix('/tags')
 * @apiGroup Tags
 * @apiVersion 1.0.0
 */
-router.get('/articleTasfindAll', async (ctx, next) => {
+router.get('/articleTagsfindAll', async (ctx, next) => {
     let tags = await ArticleTags.find({}, "-_id -__v")
     ctx.body = new Success({
         data: tags,
@@ -30,7 +30,7 @@ router.get('/articleTasfindAll', async (ctx, next) => {
 * @apiGroup Tags
 * @apiVersion 1.0.0
 */
-router.post('/articleTasAdd', validateAdd, hasArticleTags, async (ctx, next) => {
+router.post('/articleTagsAdd', validateAdd, hasArticleTags, async (ctx, next) => {
     const { type } = ctx.request.body
     let result = await ArticleTags.create({
         type
@@ -47,7 +47,7 @@ router.post('/articleTasAdd', validateAdd, hasArticleTags, async (ctx, next) => 
 * @apiGroup Tags
 * @apiVersion 1.0.0
 */
-router.get('/movieTasfindAll', async (ctx, next) => {
+router.get('/movieTagsfindAll', async (ctx, next) => {
     let tags = await MovieTags.find({}, "-_id -__v")
     ctx.body = new Success({
         data: tags,
@@ -61,7 +61,7 @@ router.get('/movieTasfindAll', async (ctx, next) => {
 * @apiGroup Tags
 * @apiVersion 1.0.0
 */
-router.post('/movieTasAdd', validateAdd, hasMovieTags, async (ctx, next) => {
+router.post('/movieTagsAdd', validateAdd, hasMovieTags, async (ctx, next) => {
     const { type } = ctx.request.body
     let result = await MovieTags.create({
         type

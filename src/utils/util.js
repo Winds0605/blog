@@ -36,10 +36,12 @@ export function parseArticle (content) {
 
 
 export function movieAarryFormat (arr) {
-    if (arr.length < 2) {
-        return arr[0]
+    if (Array.isArray(arr)) {
+        if (arr.length < 2) {
+            return arr[0]
+        }
+        return arr.join(' / ')
     }
-    return arr.join('/')
 }
 
 

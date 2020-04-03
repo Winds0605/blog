@@ -10,8 +10,8 @@ import {
     PhotoWall,
     WallTitle,
 } from './style'
-import Character from 'components/Character/'
-import Draw from 'components/Draw/'
+import Character from 'components/character'
+import Draw from 'components/draw'
 import 'App.css'
 
 export default () => {

@@ -30,9 +30,11 @@ export const MovieItem = styled.div`
     width:35%
     margin:20px 0;
     cursor:pointer;
+    
     .name{
         margin-top:10px;
         display:inline-block;
+        color:#616161;
         width:70%;
     }
     .name:hover{   

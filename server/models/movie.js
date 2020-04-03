@@ -9,8 +9,7 @@ const MovieSchema = new Schema({
     country: { type: Array },
     type: { type: Array },
     rate: { type: Number },
-    Introduction: { type: String },
-    review: { type: String }
+    introduction: { type: String }
 })
 
 const Movie = mongoose.model('movie', MovieSchema);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react'
 import { Comment, List, Pagination, message, Modal, Icon, Empty } from 'antd';
-import Message from 'components/Message'
+import Message from 'components/message'
 import { Container } from './style'
 import { post } from 'utils/http'
 import { formatDate } from 'utils/util'
@@ -106,11 +106,6 @@ export default ({ cRef, MessageUrl, routerParams }) => {
                 articleId
             });
             if (result.data.errorCode === 0) {
-                result.data.data.forEach(value => {
-                    value.sub.sort((a, b) => {
-                        return b.modifyOn - a.modifyOn
-                    })
-                })
                 setMessages(result.data.data)
                 setTotal(result.data.total)
             } else {
