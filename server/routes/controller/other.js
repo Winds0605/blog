@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const fs = require('fs')
 const { Success } = require('../../util/http-exception')
 const { uuid } = require('../../util/util')
+const Photo = require('../../models/Photo')
 
 let router = new Router();
 
@@ -46,7 +47,8 @@ router.post('/uploadImg', async (ctx, next) => {
 * @apiName transform
 * @apiGroup other
 * @apiVersion 1.0.0
-*/router.post('/transform', async (ctx, next) => {
+*/
+router.post('/transform', async (ctx, next) => {
     const file = ctx.request.files.file;
     const reader = fs.createReadStream(file.path);
     const getData = () => {
@@ -62,5 +64,22 @@ router.post('/uploadImg', async (ctx, next) => {
     })
 })
 
+/**
+* @api {post} /other/get 读取文件内容
+* @apiDescription 读取文件内容
+* @apiName transform
+* @apiGroup other
+* @apiVersion 1.0.0
+*/
+router.post('/getPhoto', async (ctx, next) => {
+    const { page, pageSize = 10 } = ctx.request.body
+    const skip = (page - 1) * pageSize
+    const result = await Photo.find({}).limit(pageSize).skip(skip)
+    const len = await Photo.find({}).countDocuments()
+    ctx.body = new Success({
+        data: result,
+        total: len
+    })
+})
 
 module.exports = router

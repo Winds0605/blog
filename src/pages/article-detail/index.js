@@ -1,9 +1,9 @@
 // import 'App.css'
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-
 import { Container, Sider, ArticleContainer, ArticleHeader, ArticleTitle, ArticleInfo, CommentContainer, LinkContainer } from './style'
-import { Icon, Tag, message, Anchor, Avatar, Input, Button, Row, Col, Divider, PageHeader } from 'antd'
+import { Tag, message, Anchor, Avatar, Input, Button, Row, Col, Divider, PageHeader } from 'antd'
+import { MyIcon } from 'utils/util'
 import ReactMarkdown from 'react-markdown'
 import HeadingBlock from "utils/HeadingBlock"
 import CodeBlock from 'utils/CodeBlock'
@@ -121,7 +121,7 @@ export default () => {
                     <ArticleTitle className="iconfot">{data.title}</ArticleTitle>
                     <ArticleInfo>
                         <span>
-                            <Icon type="schedule" style={{ marginRight: '5px' }} />{formatDate(data.modifyOn, 'yyyy-MM-dd hh:mm:ss')}
+                            <MyIcon type="icon-calendar" />{formatDate(data.modifyOn, 'yyyy-MM-dd hh:mm:ss')}
                         </span>
                         <span className="views">阅读数：{data.views}</span>
                         <span className="tag">分类：<Tag>{data.tag}</Tag></span>

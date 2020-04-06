@@ -55,3 +55,9 @@ export const Introduction = styled.div`
         margin-top:10px;
     }
 `
+
+export const ModalContainer = styled.div`
+    #basic .ant-form-item:nth-of-type(3){
+        text-align:center;
+    }
+`

@@ -5,10 +5,12 @@ import { MyIcon } from './utils/util'
 
 import Footer from './components/footer'
 
-import Home from './pages/home/home'
-import Blog from './pages/blog/blog'
-import Article from './pages/article/article'
-import Movie from './pages/movie/movie'
+import Home from './pages/home'
+// 博客
+import Article from './pages/article'
+import ArticleDetail from './pages/article-detail'
+// 电影
+import Movie from './pages/movie'
 import MovieDetail from './pages/movie-detail/index'
 
 
@@ -20,12 +22,12 @@ export default () => {
     return (
         < div className="App">
             <BrowserRouter>
-                <Redirect path="/" to="/blog" />
-                <Route path='/blog' exact component={Blog}></Route>
+                <Redirect path="/" to="/home" />
+                <Route path='/home' exact component={Home}></Route>
+                <Route path='/article' exact component={Article}></Route>
+                <Route path='/article/:articleId' exact component={ArticleDetail}></Route>
                 <Route path='/movie' exact component={Movie}></Route>
-                <Route path='/blog/:articleId' exact component={Article}></Route>
                 <Route path='/movie/:movieId' exact component={MovieDetail}></Route>
-                {/* <Route path='/home' exact component={Home}></Route> */}
                 <Footer />
                 <BackTop className="back-top">
                     <MyIcon type="icon-up" className="to-top" />

@@ -75,5 +75,5 @@ export const getPageStartAndEnd = (p, s) => {
 }
 
 export const MyIcon = createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1597339_gsprebsthtv.js'
+    scriptUrl: '//at.alicdn.com/t/font_1597339_cz0qmc28vo8.js'
 });

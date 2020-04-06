@@ -1,120 +1,121 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
+    
+    
+    
     overflow:hidden;
-    width:50%
-    margin:30px auto 50px;
-    background-color:white;
+    
+`
+
+export const Middle = styled.div`
+    border-radius:2px;
+    width:50%;
+    background:white;
+    margin:20px auto;
+    padding:10px 10px;
     box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
+    .ant-pagination {
+        margin-bottom:20px;
+    }
+    .ant-empty {
+        margin:50px 8px;
+    }
+`
+
+export const Right = styled.div`
+    height:300px;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
+    margin-top:20px;
     border-radius:5px;
-    padding:0 5px;
 `
 
-export const ArticleContainer = styled.div`
-    text-align:left;
-    float:left;
-    width:100%;
-    padding: 0 100px 50px;
-`
-
-export const Sider = styled.div`
-    position: fixed;
-    width: 300px;
-    margin-top: 30px;
-    padding: 10px;
-    right: 3%;
-    top: 0;
-    text-align: left;
-    border-radius: 5px;
-    background-color: white;
-
-    .ant-anchor-link:hover {
-        background:#EBEDEF;
-        color:black;
-        white-space:normal;
-        word-wrap:break-word; 
-        word-break:break-all;
-    }
-    .ant-anchor-wrapper {
-        margin-left:0px;
-    }
-    h2 {
-        font-size:20px;
-        color:#8D9CAA;
-    }
-`
-
-export const LinkContainer = styled.div`
-    &.level1 .ant-anchor-link-title{
-        color:black;
-        font-size:16px;
-        font-weight:600;
-    }
-
-    &.level2 .ant-anchor-link-title{
-        padding-left:30px;
-        color:rgba(51,51,51);
-        font-size:14px;
-        font-weight:normal;
-    }
-
-    &.level2 .ant-anchor-link-title::before{
-        content:" ";
-        width:5px;
-        height:5px;
-        border-radius:50%;
-        position:absolute;
-        left:8%;
-        top:50%;
-        transform:translateY(-50%);
-        background:rgba(51,51,51)
-    }
-`
-
-export const ArticleHeader = styled.div`
-    width:100%;
-    padding:10px 0;
-    margin:10px auto;
-    text-align:center;
-    border-bottom: 1px solid #e0dee3;
-`
-
-export const ArticleTitle = styled.div`
-    font-size:40px
-`
-export const ArticleInfo = styled.div`
-    height: 40px;
-    padding-top: 10px;
-    color:#9B9B9B;
-    font-size:12px;
-
-    .views,.tag{
-        margin-left:20px;
-    }
-`
-
-export const CommentContainer = styled.div`
-
-    h1 {
-        text-align: center;
-        color: #8D9CAA;
-        font-size: 20px;
-    }
-    margin-top:50px;
+export const BlogItem = styled.div`
     position:relative;
-    overflow:hidden;
-    padding-bottom: 50px;
-    width:100%;
-    height:auto;
+    margin-bottom:25px;
+    padding:20px;
+    border-radius:5px;
+    color:#797979;
 
-    .commentArea{
-        display:flex;
-        align-items:center;
-        .avatar {
-            float:left;
+    .content{
+        overflow:hidden;
+        text-align:left;
+        font-weight:600;
+        p {
+            margin-top:1em;
+            margin-bottom:1em;
         }
-        .send{
-            float:right;
+    }
+
+    .image {
+        width:100%;
+        img {
+            width:100%;
         }
+    }
+
+    .desc {
+        text-align:center;
+        font-size:10px;
+        font-weight:600;
+        margin-bottom:10px;
+        h1 {
+            font-size: 25px;
+            margin: 25px 0;
+        }
+        .tag {
+            width:fit-content;
+            display:inline-block;
+            margin-right:10px;
+            border-bottom: 1px solid #797979;
+            cursor:pointer;
+            &:hover {
+                color:#000;
+                border-bottom: 1px solid #000;
+            }
+        }
+    }
+
+    .footer{
+        margin-top:20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align:center;
+        letter-spacing: 2px;
+        color:#797979;
+        border-bottom: 1px solid #eee;
+        cursor:pointer;
+        &:hover {
+            color:#000;
+        }
+    }
+`
+
+export const Detail = styled.div`
+    position:absolute;
+    bottom:0;
+`
+
+export const Classif = styled.div`
+    height:100px;
+    box-shadow: rgba(0,0,0,.2) 0 1px 10px 0px;
+    &:hover {
+        box-shadow: rgba(0,0,0,.3) 0 1px 10px 0px;
+    }
+    border-radius:5px;
+    padding:0 10px;
+    margin-top:20px;
+    text-align:left;
+    .tag{
+        margin:5px;
+        background:#FAFAFA;
+        border:1px solid #D9D9D9;
+        color:#5C5C5C;
     }
 `

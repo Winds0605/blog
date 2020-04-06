@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react'
-import { Comment, List, Pagination, message, Modal, Icon, Empty } from 'antd';
+import { Comment, List, Pagination, message, Modal, Empty } from 'antd';
 import Message from 'components/message'
 import { Container } from './style'
 import { post } from 'utils/http'
-import { formatDate } from 'utils/util'
+import { formatDate, MyIcon } from 'utils/util'
+import { ACaddSubComment } from 'route/articleComments'
+import { MEaddSubMessage } from 'route/message'
 
 const paginationStyle = {
     textAlign: 'center',
@@ -49,7 +51,7 @@ const MessageList = ({ messages, total, reply, handleShowSubMessage }) => {
                 <Comment
                     actions={[
                         <span key="comment-nested-reply-to" onClick={reply.bind(this, [props.messageId ? props.messageId : props.commentId, props.author])}>
-                            <Icon type="edit" style={{ marginRight: '5px' }} />回复
+                            <MyIcon type="icon-pinglun" style={{ marginRight: '5px' }} />回复
                         </span>,
                         <span onClick={handleShowSubMessage.bind(this, props.author)}>
                             {props.sub.length > 0 && !props.show ? `查看${props.sub.length}条评论` :
@@ -156,7 +158,7 @@ export default ({ cRef, MessageUrl, routerParams }) => {
         }
         setSubmitting(true)
         try {
-            let result = await post('/messages/addSubMessage', {
+            let result = await post(MEaddSubMessage, {
                 messageId: replayInfo.id,
                 ...messageInfo
             })
@@ -185,7 +187,7 @@ export default ({ cRef, MessageUrl, routerParams }) => {
         }
         setSubmitting(true)
         try {
-            let result = await post('/comments/addSubComment', {
+            let result = await post(ACaddSubComment, {
                 commentId: replayInfo.id,
                 ...messageInfo
             })

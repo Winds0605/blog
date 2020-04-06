@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react'
-import { Drawer, Tooltip, Icon, Modal, Button, message } from 'antd'
+import { Drawer, Tooltip, Modal, Button, message } from 'antd'
 import Comment from 'components/comment/'
 import Message from 'components/message'
 import { Draw } from './style'
 import { post } from 'utils/http'
+import { MyIcon } from 'utils/util'
 import { MEfindAll } from 'route/message'
 
-const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1597339_u91q9e97qgo.js',
-});
 
 export default () => {
     const [visible, setVisible] = useState(false)
@@ -24,6 +22,7 @@ export default () => {
 
     // 提交留言
     let handleSubmit = async () => {
+        console.log('dasdas')
         if (!messageInfo.author || !messageInfo.content) {
             message.warning('你还没输入内容呢 😫')
             return;
@@ -83,7 +82,7 @@ export default () => {
         <>
             <Draw>
                 <Tooltip title="给我留言吧 :)">
-                    <IconFont className="icon" type="icon-message1" onClick={onOpen} />
+                    <MyIcon className="icon" type="icon-message1" onClick={onOpen} />
                 </Tooltip>
                 <Drawer
                     // title="留言板 😍"
@@ -105,7 +104,7 @@ export default () => {
                         <Message
                             handleContentChange={handleContentChange}
                             handleAuthorChange={handleAuthorChange}
-                            onSubmit={handleSubmit}
+                            handleMessageReply={handleSubmit}
                             submitting={submitting}
                             content={messageInfo.content}
                             author={messageInfo.author} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Header from 'components/header/index'
 import { Container, Article, MovieItem } from './style'
@@ -33,6 +33,7 @@ export default () => {
             message.error('获取电影数据失败')
         }
         setTags(["全部", ...tags.data.data.map(value => value.type)])
+
         // 全部电影数据
         setMovies(movies.data.data)
         // 当前tab所有电影数据

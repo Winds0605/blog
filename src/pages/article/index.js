@@ -100,7 +100,7 @@ export default () => {
                                                         <div className="desc">
                                                             <span className="tag">{value.tag}</span>
                                                             <span className="time">{formatDate(value.modifyOn, 'yyyy-MM-dd')}</span>
-                                                            <Link to={`/blog/${value.articleId}`}>
+                                                            <Link to={`/article/${value.articleId}`}>
                                                                 <h1>{value.title}</h1>
                                                             </Link>
                                                         </div>
