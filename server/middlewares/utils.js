@@ -2,6 +2,7 @@ const { NotFound, Forbid } = require('../util/http-exception')
 const Articles = require('../models/articles')
 const ArticleTags = require('../models/articleTags')
 const MovieTags = require('../models/movieTags')
+const Movie = require('../models/Movie')
 
 
 
@@ -20,6 +21,15 @@ const hasArticle = async (ctx, next) => {
         articleId
     })
     if (!result) ctx.body = new NotFound("不存在该文章")
+    else await next()
+}
+
+const hasMovie = async (ctx, next) => {
+    const { movieId } = ctx.request.body
+    const result = await Movie.findOne({
+        movieId
+    })
+    if (!result) ctx.body = new NotFound("不存在该电影")
     else await next()
 }
 
@@ -45,5 +55,6 @@ module.exports = {
     isUniqueTitle,
     hasArticle,
     hasArticleTags,
-    hasMovieTags
+    hasMovieTags,
+    hasMovie
 }

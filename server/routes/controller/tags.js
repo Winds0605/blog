@@ -2,8 +2,7 @@ const Router = require('koa-router');
 const ArticleTags = require('../../models/articleTags')
 const MovieTags = require('../../models/movieTags')
 const { Success } = require('../../util/http-exception')
-const { hasArticleTags, hasMovieTags } = require('../../middlewares/utils')
-const { validateAdd } = require('../../middlewares/validator/tag')
+const { validateType } = require('../../middlewares/validator/tag')
 
 let router = new Router();
 
@@ -28,16 +27,37 @@ router.get('/articleTagsfindAll', async (ctx, next) => {
 * @apiDescription 添加文章分类标签
 * @apiName articleTasAdd
 * @apiGroup Tags
+* @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/articleTagsAdd', validateAdd, hasArticleTags, async (ctx, next) => {
+router.post('/articleTagsAdd', validateType, async (ctx, next) => {
     const { type } = ctx.request.body
-    let result = await ArticleTags.create({
-        type
-    })
+    let types = []
+    for (let option of type) {
+        types.push({
+            type: option
+        })
+    }
+    let result = await ArticleTags.insertMany(types)
     ctx.body = new Success({
         data: result
     }, "新增成功")
+})
+
+/**
+* @api {post} /tags/articleTagsDelete 删除文章分类标签
+* @apiDescription 删除文章分类标签
+* @apiName movieTagsDelete
+* @apiGroup Tags
+* @apiParam {array} type 类型
+* @apiVersion 1.0.0
+*/
+router.post('/articleTagsDelete', validateType, async (ctx, next) => {
+    const { type } = ctx.request.body
+    let result = await ArticleTags.deleteMany({ type: { $in: type } })
+    ctx.body = new Success({
+        data: result
+    }, "删除成功")
 })
 
 /**
@@ -59,16 +79,37 @@ router.get('/movieTagsfindAll', async (ctx, next) => {
 * @apiDescription 添加电影分类标签
 * @apiName movieTasAdd
 * @apiGroup Tags
+* @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/movieTagsAdd', validateAdd, hasMovieTags, async (ctx, next) => {
+router.post('/movieTagsAdd', validateType, async (ctx, next) => {
     const { type } = ctx.request.body
-    let result = await MovieTags.create({
-        type
-    })
+    let types = []
+    for (let option of type) {
+        types.push({
+            type: option
+        })
+    }
+    let result = await MovieTags.insertMany(types)
     ctx.body = new Success({
         data: result
     }, "新增成功")
+})
+
+/**
+* @api {post} /tags/movieTagsDelete 删除电影分类标签
+* @apiDescription 删除电影分类标签
+* @apiName movieTagsDelete
+* @apiGroup Tags
+* @apiParam {array} type 类型
+* @apiVersion 1.0.0
+*/
+router.post('/movieTagsDelete', validateType, async (ctx, next) => {
+    const { type } = ctx.request.body
+    let result = await MovieTags.deleteMany({ type: { $in: type } })
+    ctx.body = new Success({
+        data: result
+    }, "删除成功")
 })
 
 module.exports = router

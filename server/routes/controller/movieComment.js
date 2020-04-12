@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const MovieComments = require('../../models/MovieComments')
 const { Success } = require('../../util/http-exception')
-const { validateFindCommentsById } = require('../../middlewares/validator/movieComment')
+const { validateFindCommentsById, validateAdd, validateAddSubComment, validateCommentId, validateDeleteSubCommentBySubId, validateMovieId } = require('../../middlewares/validator/movieComment')
 const { uuid } = require('../../util/util')
 
 let router = new Router();
@@ -39,7 +39,7 @@ router.post('/findCommentById', validateFindCommentsById, async (ctx, next) => {
 * @apiParam {string} content 内容
 * @apiVersion 1.0.0
 */
-router.post('/add', async (ctx, next) => {
+router.post('/add', validateAdd, async (ctx, next) => {
     const { movieId, author, content, rate } = ctx.request.body
     const result = await MovieComments.create({
         commentId: uuid(10, 16),
@@ -53,8 +53,8 @@ router.post('/add', async (ctx, next) => {
 })
 
 /**
-* @api {post} /movieComments/addSubComment 增加一条子留言
-* @apiDescription 增加一条子留言
+* @api {post} /movieComments/addSubComment 增加一条子评论
+* @apiDescription 增加一条子评论
 * @apiName addSubMessage
 * @apiGroup MovieComments
 * @apiParam {string} messageId 被回复的留言id
@@ -62,7 +62,7 @@ router.post('/add', async (ctx, next) => {
 * @apiParam {string} content 回复内容
 * @apiVersion 1.0.0
 */
-router.post('/addSubComment', async (ctx, next) => {
+router.post('/addSubComment', validateAddSubComment, async (ctx, next) => {
     const { commentId, content, author, avatar } = ctx.request.body
     const result = await MovieComments.updateOne(
         { commentId },
@@ -81,6 +81,56 @@ router.post('/addSubComment', async (ctx, next) => {
     ctx.body = new Success(result, '添加成功');
 })
 
+/**
+* @api {post} /movieComments/deleteByMovieId 删除某部电影的评论
+* @apiDescription 删除某部电影的评论
+* @apiName deleteByMovieId
+* @apiGroup movieComments
+* @apiParam {string} movieId 电影id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteByMovieId', validateMovieId, async (ctx, next) => {
+    const { movieId } = ctx.request.body
+    const result = await MovieComments.deleteMany({ movieId })
+    ctx.body = new Success(result, '删除成功');
+})
 
+/**
+* @api {post} /movieComments/deleteByCommentId 删除电影某个评论
+* @apiDescription 删除电影某个评论
+* @apiName deleteByCommentId
+* @apiGroup MovieComments
+* @apiParam {string} commentId 评论id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteByCommentId', validateCommentId, async (ctx, next) => {
+    const { commentId } = ctx.request.body
+    const result = await MovieComments.deleteOne({ commentId })
+    ctx.body = new Success(result, '删除成功');
+})
+
+
+/**
+* @api {post} /movieComments/deleteSubCommentBySubId 删除某个子评论
+* @apiDescription 删除某个子评论
+* @apiName deleteSubCommentByCommentId
+* @apiGroup MovieComments
+* @apiParam {string} subId 子评论id
+* @apiVersion 1.0.0
+*/
+router.post('/deleteSubCommentBySubId', validateDeleteSubCommentBySubId, async (ctx, next) => {
+    const { subId } = ctx.request.body
+    const result = await MovieComments.updateOne(
+        { "sub.subId": subId },
+        {
+            $pull: {
+                'sub': {
+                    subId: subId
+                }
+            }
+        }
+    )
+    ctx.body = new Success(result, '删除成功');
+})
 
 module.exports = router

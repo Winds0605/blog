@@ -1,36 +1,24 @@
-const Parameter = require('parameter');
-const { ParameterException } = require('../../util/http-exception')
-
-const parameter = new Parameter({
-    validateRoot: true, // restrict the being validate value must be a object
-});
+const { validatorFn } = require('../../util/util')
 
 const validateFindAll = async (ctx, next) => {
     const rule = {
         page: 'number'
     };
-    const errors = parameter.validate(rule, ctx.request.body);
-
-    if (errors) {
-        ctx.body = new ParameterException(errors)
-    } else {
-        await next()
-    }
+    return validatorFn(ctx, next, rule)
 }
 
-const validateInsertSubMessages = async (ctx, next) => {
+const validateDeleteByMessageId = async (ctx, next) => {
     const rule = {
-        messageId: 'string',
-        content: 'string',
-        author: 'string'
+        messageId: 'string'
     };
-    const errors = parameter.validate(rule, ctx.request.body);
+    return validatorFn(ctx, next, rule)
+}
 
-    if (errors) {
-        ctx.body = new ParameterException(errors)
-    } else {
-        await next()
-    }
+const validateDeleteSubMessageBySubId = async (ctx, next) => {
+    const rule = {
+        subId: 'string'
+    };
+    return validatorFn(ctx, next, rule)
 }
 
 const validateMessages = async (ctx, next) => {
@@ -38,16 +26,23 @@ const validateMessages = async (ctx, next) => {
         author: 'string',
         content: 'string'
     };
-    const errors = parameter.validate(rule, ctx.request.body);
-    if (errors) {
-        ctx.body = new ParameterException(errors)
-    } else {
-        await next()
-    }
+    return validatorFn(ctx, next, rule)
+}
+
+
+const validateInsertSubMessages = async (ctx, next) => {
+    const rule = {
+        messageId: 'string',
+        content: 'string',
+        author: 'string'
+    };
+    return validatorFn(ctx, next, rule)
 }
 
 module.exports = {
     validateMessages,
     validateFindAll,
-    validateInsertSubMessages
+    validateInsertSubMessages,
+    validateDeleteByMessageId,
+    validateDeleteSubMessageBySubId
 }

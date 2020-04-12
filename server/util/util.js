@@ -1,3 +1,9 @@
+const Parameter = require('parameter');
+const { ParameterException } = require('./http-exception')
+const parameter = new Parameter({
+    validateRoot: true, // restrict the being validate value must be a object
+});
+
 const uuid = (len, radix) => {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     var uuid = [], i;
@@ -23,7 +29,17 @@ const uuid = (len, radix) => {
     return uuid.join('');
 }
 
+const validatorFn = async (ctx, next, rule) => {
+    const errors = parameter.validate(rule, ctx.request.body);
+    if (errors) {
+        ctx.body = new ParameterException(errors)
+    } else {
+        await next()
+    }
+}
+
 
 module.exports = {
-    uuid
+    uuid,
+    validatorFn
 }

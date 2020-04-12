@@ -119,6 +119,7 @@ router.post('/deleteSubCommentByCommentId', validateDeleteSubCommentByCommentId,
 * @apiParam {string} messageId 被回复的留言id
 * @apiParam {string} author 回复人
 * @apiParam {string} content 回复内容
+* @apiParam {string} [avatar] 头像
 * @apiVersion 1.0.0
 */
 router.post('/addSubComment', validateInsertSubComments, async (ctx, next) => {

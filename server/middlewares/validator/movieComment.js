@@ -1,9 +1,4 @@
-const Parameter = require('parameter');
-const { ParameterException } = require('../../util/http-exception')
-
-const parameter = new Parameter({
-    validateRoot: true, // restrict the being validate value must be a object
-});
+const { validatorFn } = require('../../util/util')
 
 
 const validateFindCommentsById = async (ctx, next) => {
@@ -11,15 +6,55 @@ const validateFindCommentsById = async (ctx, next) => {
         page: 'number',
         movieId: 'string'
     };
-    const errors = parameter.validate(rule, ctx.request.body);
+    return validatorFn(ctx, next, rule)
+}
 
-    if (errors) {
-        ctx.body = new ParameterException(errors)
-    } else {
-        await next()
-    }
+const validateAdd = async (ctx, next) => {
+    const rule = {
+        movieId: 'string',
+        rate: 'number',
+        author: 'string',
+        content: 'string',
+    };
+    return validatorFn(ctx, next, rule)
+
+}
+
+const validateAddSubComment = async (ctx, next) => {
+    const rule = {
+        movieId: 'string',
+        author: 'string',
+        content: 'string',
+    };
+    return validatorFn(ctx, next, rule)
+}
+
+const validateMovieId = async (ctx, next) => {
+    const rule = {
+        movieId: 'string',
+    };
+    return validatorFn(ctx, next, rule)
+}
+
+const validateCommentId = async (ctx, next) => {
+    const rule = {
+        commentId: 'string',
+    };
+    return validatorFn(ctx, next, rule)
+}
+
+const validateDeleteSubCommentBySubId = async (ctx, next) => {
+    const rule = {
+        subId: 'string',
+    };
+    return validatorFn(ctx, next, rule)
 }
 
 module.exports = {
-    validateFindCommentsById
+    validateFindCommentsById,
+    validateAdd,
+    validateAddSubComment,
+    validateMovieId,
+    validateDeleteSubCommentBySubId,
+    validateCommentId
 }

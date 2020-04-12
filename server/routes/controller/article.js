@@ -1,9 +1,10 @@
 const Router = require('koa-router');
 const Articles = require('../../models/articles')
-const { Success, NotFound } = require('../../util/http-exception')
+const { Success } = require('../../util/http-exception')
 const { isUniqueTitle, hasArticle } = require('../../middlewares/utils')
 const { validateAdd, validateFindById, validateEdit } = require('../../middlewares/validator/article')
 const { uuid } = require('../../util/util')
+
 let router = new Router();
 
 router.prefix('/articles')
@@ -32,50 +33,15 @@ router.get('/findAll', async (ctx, next) => {
 * @apiParam {string} articleId 文章id
 * @apiVersion 1.0.0
 */
-router.post('/findById', validateFindById, async (ctx, next) => {
+router.post('/findById', validateFindById, hasArticle, async (ctx, next) => {
     const { articleId } = ctx.request.body
     let result = await Articles.findOne({
         articleId
     })
-    if (result) {
-        ctx.body = new Success({
-            data: result
-        }, '查询成功')
-    } else {
-        ctx.body = new NotFound()
-    }
-})
-
-/**
-* @api {post} /articles/findByPage 分页数据
-* @apiDescription 分页数据
-* @apiName findByPage
-* @apiGroup Article
-* @apiVersion 1.0.0
-*/
-router.post('/findByPage', async (ctx, next) => {
-    const { page, tag } = ctx.request.body
-    const skip = (page - 1) * 10
-    let articles;
-    let len;
-    try {
-        if (tag === 'All') {
-            articles = await Articles.find({}, "-_id -__v", { sort: [{ _id: -1 }] }).limit(10).skip(skip)
-            len = await Articles.find({}).countDocuments()
-        } else {
-            articles = await Articles.find({ tag }, "-_id -__v", { sort: [{ _id: -1 }] }).limit(10).skip(skip)
-            len = await Articles.find({ tag }).countDocuments()
-        }
-    } catch (error) {
-        throw error
-    }
     ctx.body = new Success({
-        data: articles,
-        total: len
-    }, "查询成功")
+        data: result
+    }, '查询成功')
 })
-
-
 
 /**
 * @api {post} /articles/add 添加一篇文章
@@ -85,6 +51,8 @@ router.post('/findByPage', async (ctx, next) => {
 * @apiParam {string} title 文章标题
 * @apiParam {string} content 文章内容
 * @apiParam {string} desc 文章简介
+* @apiParam {string} banner 文章图片
+* @apiParam {string} tag 文章类型
 * @apiVersion 1.0.0
 */
 router.post('/add', validateAdd, isUniqueTitle, async (ctx, next) => {

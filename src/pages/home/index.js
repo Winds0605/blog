@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     HomeContainer,
     Introduction,
     IntroductionItem,
 } from './style'
+import { post } from 'utils/http'
 import Header from 'components/header'
 import Water from 'components/water'
 import Draw from 'components/draw'
 import 'App.css'
 
 export default () => {
+    const [total, setTotal] = useState(0)
+    const [photo, setPhoto] = useState([])
+    const getMorePhotos = async (page) => {
+        const res = await post('tools/getPhoto')
+        setTotal(res.data.total)
+        setPhoto(res.data.data)
+    }
+    useEffect(() => {
+        getMorePhotos()
+    }, [])
+
     return (
         <HomeContainer>
             <Header></Header>
@@ -27,7 +39,7 @@ export default () => {
                     <p>I hope to take photos that everyone likes.<span role="img" aria-label="sheep">😝</span></p>
                 </IntroductionItem>
             </Introduction>
-            <Water />
+            <Water total={total} photo={photo} />
             <Draw />
         </HomeContainer>
     )

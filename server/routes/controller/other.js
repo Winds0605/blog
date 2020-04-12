@@ -65,16 +65,14 @@ router.post('/transform', async (ctx, next) => {
 })
 
 /**
-* @api {post} /other/get 读取文件内容
-* @apiDescription 读取文件内容
-* @apiName transform
+* @api {post} /other/getPhoto 获取所有照片
+* @apiDescription 获取所有照片
+* @apiName getPhoto
 * @apiGroup other
 * @apiVersion 1.0.0
 */
 router.post('/getPhoto', async (ctx, next) => {
-    const { page, pageSize = 10 } = ctx.request.body
-    const skip = (page - 1) * pageSize
-    const result = await Photo.find({}).limit(pageSize).skip(skip)
+    const result = await Photo.find({})
     const len = await Photo.find({}).countDocuments()
     ctx.body = new Success({
         data: result,
