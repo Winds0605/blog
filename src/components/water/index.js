@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { WaterContainer } from './style'
 
-export default ({ photo, total }) => {
+export default ({ photo }) => {
 
     const pageSize = 10
 

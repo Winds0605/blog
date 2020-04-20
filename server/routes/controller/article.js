@@ -1,9 +1,10 @@
 const Router = require('koa-router');
 const Articles = require('../../models/articles')
 const { Success } = require('../../util/http-exception')
-const { isUniqueTitle, hasArticle } = require('../../middlewares/utils')
+const { isUniqueTitle, hasArticle, Authorization } = require('../../middlewares/utils')
 const { validateAdd, validateFindById, validateEdit } = require('../../middlewares/validator/article')
 const { uuid } = require('../../util/util')
+
 
 let router = new Router();
 
@@ -55,7 +56,7 @@ router.post('/findById', validateFindById, hasArticle, async (ctx, next) => {
 * @apiParam {string} tag 文章类型
 * @apiVersion 1.0.0
 */
-router.post('/add', validateAdd, isUniqueTitle, async (ctx, next) => {
+router.post('/add', Authorization, validateAdd, isUniqueTitle, async (ctx, next) => {
     const { title, content, desc, banner, tag } = ctx.request.body
     let result = await Articles.create({
         articleId: uuid(10, 16),
@@ -78,7 +79,7 @@ router.post('/add', validateAdd, isUniqueTitle, async (ctx, next) => {
 * @apiParam {string} articleId 文章id
 * @apiVersion 1.0.0
 */
-router.post('/delete', validateFindById, hasArticle, async (ctx, next) => {
+router.post('/delete', Authorization, validateFindById, hasArticle, async (ctx, next) => {
     const { articleId } = ctx.request.body
     let result = await Articles.deleteOne({ articleId })
     ctx.body = new Success({
@@ -99,7 +100,7 @@ router.post('/delete', validateFindById, hasArticle, async (ctx, next) => {
 * @apiParam {string} tag 文章标签
 * @apiVersion 1.0.0
 */
-router.post('/edit', validateEdit, hasArticle, async (ctx, next) => {
+router.post('/edit', Authorization, validateEdit, hasArticle, async (ctx, next) => {
     const { articleId, title, content, desc, banner, tag } = ctx.request.body
     let result = await Articles.updateOne(
         { articleId },

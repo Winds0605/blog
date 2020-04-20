@@ -3,6 +3,7 @@ const ArticleTags = require('../../models/articleTags')
 const MovieTags = require('../../models/movieTags')
 const { Success } = require('../../util/http-exception')
 const { validateType } = require('../../middlewares/validator/tag')
+const { Authorization } = require('../../middlewares/utils')
 
 let router = new Router();
 
@@ -30,7 +31,7 @@ router.get('/articleTagsfindAll', async (ctx, next) => {
 * @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/articleTagsAdd', validateType, async (ctx, next) => {
+router.post('/articleTagsAdd', Authorization, validateType, async (ctx, next) => {
     const { type } = ctx.request.body
     let types = []
     for (let option of type) {
@@ -52,7 +53,7 @@ router.post('/articleTagsAdd', validateType, async (ctx, next) => {
 * @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/articleTagsDelete', validateType, async (ctx, next) => {
+router.post('/articleTagsDelete', Authorization, validateType, async (ctx, next) => {
     const { type } = ctx.request.body
     let result = await ArticleTags.deleteMany({ type: { $in: type } })
     ctx.body = new Success({
@@ -82,7 +83,7 @@ router.get('/movieTagsfindAll', async (ctx, next) => {
 * @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/movieTagsAdd', validateType, async (ctx, next) => {
+router.post('/movieTagsAdd', Authorization, validateType, async (ctx, next) => {
     const { type } = ctx.request.body
     let types = []
     for (let option of type) {
@@ -104,7 +105,7 @@ router.post('/movieTagsAdd', validateType, async (ctx, next) => {
 * @apiParam {array} type 类型
 * @apiVersion 1.0.0
 */
-router.post('/movieTagsDelete', validateType, async (ctx, next) => {
+router.post('/movieTagsDelete', Authorization, validateType, async (ctx, next) => {
     const { type } = ctx.request.body
     let result = await MovieTags.deleteMany({ type: { $in: type } })
     ctx.body = new Success({

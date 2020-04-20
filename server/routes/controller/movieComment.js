@@ -1,8 +1,17 @@
 const Router = require('koa-router');
 const MovieComments = require('../../models/MovieComments')
 const { Success } = require('../../util/http-exception')
-const { validateFindCommentsById, validateAdd, validateAddSubComment, validateCommentId, validateDeleteSubCommentBySubId, validateMovieId } = require('../../middlewares/validator/movieComment')
+const {
+    validateFindCommentsById,
+    validateAdd,
+    validateAddSubComment,
+    validateCommentId,
+    validateDeleteSubCommentBySubId,
+    validateMovieId
+} = require('../../middlewares/validator/movieComment')
 const { uuid } = require('../../util/util')
+const { Authorization } = require('../../middlewares/utils')
+
 
 let router = new Router();
 
@@ -85,11 +94,11 @@ router.post('/addSubComment', validateAddSubComment, async (ctx, next) => {
 * @api {post} /movieComments/deleteByMovieId 删除某部电影的评论
 * @apiDescription 删除某部电影的评论
 * @apiName deleteByMovieId
-* @apiGroup movieComments
+* @apiGroup MovieComments
 * @apiParam {string} movieId 电影id
 * @apiVersion 1.0.0
 */
-router.post('/deleteByMovieId', validateMovieId, async (ctx, next) => {
+router.post('/deleteByMovieId', Authorization, validateMovieId, async (ctx, next) => {
     const { movieId } = ctx.request.body
     const result = await MovieComments.deleteMany({ movieId })
     ctx.body = new Success(result, '删除成功');
@@ -103,7 +112,7 @@ router.post('/deleteByMovieId', validateMovieId, async (ctx, next) => {
 * @apiParam {string} commentId 评论id
 * @apiVersion 1.0.0
 */
-router.post('/deleteByCommentId', validateCommentId, async (ctx, next) => {
+router.post('/deleteByCommentId', Authorization, validateCommentId, async (ctx, next) => {
     const { commentId } = ctx.request.body
     const result = await MovieComments.deleteOne({ commentId })
     ctx.body = new Success(result, '删除成功');
@@ -118,7 +127,7 @@ router.post('/deleteByCommentId', validateCommentId, async (ctx, next) => {
 * @apiParam {string} subId 子评论id
 * @apiVersion 1.0.0
 */
-router.post('/deleteSubCommentBySubId', validateDeleteSubCommentBySubId, async (ctx, next) => {
+router.post('/deleteSubCommentBySubId', Authorization, validateDeleteSubCommentBySubId, async (ctx, next) => {
     const { subId } = ctx.request.body
     const result = await MovieComments.updateOne(
         { "sub.subId": subId },

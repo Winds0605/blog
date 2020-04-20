@@ -14,7 +14,7 @@ export default () => {
     const [total, setTotal] = useState(0)
     const [photo, setPhoto] = useState([])
     const getMorePhotos = async (page) => {
-        const res = await post('tools/getPhoto')
+        const res = await post('photo/findAll')
         setTotal(res.data.total)
         setPhoto(res.data.data)
     }

@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const Messages = require('../../models/messages')
 const { Success } = require('../../util/http-exception')
 const { uuid } = require('../../util/util')
+const { Authorization } = require('../../middlewares/utils')
 const {
     validateMessages,
     validateFindAll,
@@ -96,7 +97,7 @@ router.post('/addSubMessage', validateInsertSubMessages, async (ctx, next) => {
 * @apiParam {string} messageId 留言id
 * @apiVersion 1.0.0
 */
-router.post('/deleteByMessageId', validateDeleteByMessageId, async (ctx, next) => {
+router.post('/deleteByMessageId', Authorization, validateDeleteByMessageId, async (ctx, next) => {
     const { messageId } = ctx.request.body
     const result = await Messages.deleteOne({ messageId })
     ctx.body = new Success(result, '删除成功');
@@ -111,7 +112,7 @@ router.post('/deleteByMessageId', validateDeleteByMessageId, async (ctx, next) =
 * @apiParam {string} subId 子评论id
 * @apiVersion 1.0.0
 */
-router.post('/deleteSubMessageBySubId', validateDeleteSubMessageBySubId, async (ctx, next) => {
+router.post('/deleteSubMessageBySubId', Authorization, validateDeleteSubMessageBySubId, async (ctx, next) => {
     const { subId } = ctx.request.body
     const result = await Messages.updateOne(
         { "sub.subId": subId },

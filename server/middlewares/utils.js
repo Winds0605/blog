@@ -3,7 +3,9 @@ const Articles = require('../models/articles')
 const ArticleTags = require('../models/articleTags')
 const MovieTags = require('../models/movieTags')
 const Movie = require('../models/Movie')
-
+const User = require('../models/User')
+const { key } = require('../util/config')
+const koajwt = require('koa-jwt')
 
 
 const isUniqueTitle = async (ctx, next) => {
@@ -51,10 +53,25 @@ const hasMovieTags = async (ctx, next) => {
     else await next()
 }
 
+const hasEmail = async (ctx, next) => {
+    const { email } = ctx.request.body
+    console.log(email)
+    const result = await User.findOne({
+        email
+    })
+    console.log(result)
+    if (result) ctx.body = new Forbid("该邮箱已被注册")
+    else await next()
+}
+
+const Authorization = koajwt({ secret: key })
+
 module.exports = {
+    Authorization,
     isUniqueTitle,
     hasArticle,
     hasArticleTags,
     hasMovieTags,
-    hasMovie
+    hasMovie,
+    hasEmail
 }

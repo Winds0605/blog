@@ -2,22 +2,22 @@ const Router = require('koa-router');
 const fs = require('fs')
 const { Success } = require('../../util/http-exception')
 const { uuid } = require('../../util/util')
-const Photo = require('../../models/Photo')
 
 let router = new Router();
 
 router.prefix('/tools')
 
 /**
-* @api {post} /other/uploadImg 上传图片返回路径
+* @api {post} /tools/uploadImg 上传图片返回路径
 * @apiDescription 上传图片返回路径
 * @apiName uploadImg
-* @apiGroup other
+* @apiGroup tools
 * @apiVersion 1.0.0
 */
 router.post('/uploadImg', async (ctx, next) => {
     const file = ctx.request.files.file;
     const reader = fs.createReadStream(file.path);
+
     let filePath = __dirname + "/static/img";
     let fileResource = filePath + `/${uuid(8, 16)}-${file.name}`;
 
@@ -42,10 +42,10 @@ router.post('/uploadImg', async (ctx, next) => {
 
 
 /**
-* @api {post} /other/transform 读取文件内容
+* @api {post} /tools/transform 读取文件内容
 * @apiDescription 读取文件内容
 * @apiName transform
-* @apiGroup other
+* @apiGroup tools
 * @apiVersion 1.0.0
 */
 router.post('/transform', async (ctx, next) => {
@@ -64,20 +64,6 @@ router.post('/transform', async (ctx, next) => {
     })
 })
 
-/**
-* @api {post} /other/getPhoto 获取所有照片
-* @apiDescription 获取所有照片
-* @apiName getPhoto
-* @apiGroup other
-* @apiVersion 1.0.0
-*/
-router.post('/getPhoto', async (ctx, next) => {
-    const result = await Photo.find({})
-    const len = await Photo.find({}).countDocuments()
-    ctx.body = new Success({
-        data: result,
-        total: len
-    })
-})
+
 
 module.exports = router

@@ -4,6 +4,7 @@ const { validateMovieId, validateAdd } = require('../../middlewares/validator/mo
 const { hasMovie } = require('../../middlewares/utils')
 const { Success } = require('../../util/http-exception')
 const { uuid } = require('../../util/util')
+const { Authorization } = require('../../middlewares/utils')
 
 let router = new Router();
 
@@ -13,7 +14,7 @@ router.prefix('/movies')
 * @api {get} /movies/findAll 获取所有电影数据
 * @apiDescription 获取所有电影数据
 * @apiName findAll
-* @apiGroup Movies
+* @apiGroup Movie
 * @apiVersion 1.0.0
 */
 router.get('/findAll', async (ctx, next) => {
@@ -29,7 +30,7 @@ router.get('/findAll', async (ctx, next) => {
 * @api {post} /movies/findById 获取单个电影数据
 * @apiDescription 获取单个电影数据
 * @apiName findById
-* @apiGroup Movies
+* @apiGroup Movie
 * @apiParam {string} movieId 电影ID
 * @apiVersion 1.0.0
 */
@@ -45,7 +46,7 @@ router.post('/findById', validateMovieId, hasMovie, async (ctx, next) => {
 * @api {post} /movies/add 添加一部电影
 * @apiDescription 添加一部电影
 * @apiName add
-* @apiGroup Movies
+* @apiGroup Movie
 * @apiParam {string} name 电影ID
 * @apiParam {string} image 电影ID
 * @apiParam {string} director 电影导演
@@ -74,11 +75,11 @@ router.post('/add', validateAdd, hasMovie, async (ctx, next) => {
 * @api {post} /movies/delete 删除一部电影
 * @apiDescription 删除一部电影
 * @apiName delete
-* @apiGroup Movies
+* @apiGroup Movie
 * @apiParam {string} movieId 电影id
 * @apiVersion 1.0.0
 */
-router.post('/delete', validateMovieId, hasMovie, async (ctx, next) => {
+router.post('/delete', Authorization, validateMovieId, hasMovie, async (ctx, next) => {
     const { movieId } = ctx.request.body
     let result = await Movie.deleteOne({ movieId })
     ctx.body = new Success({
@@ -101,7 +102,7 @@ router.post('/delete', validateMovieId, hasMovie, async (ctx, next) => {
 * @apiParam {string} introduction 电影简介
 * @apiVersion 1.0.0
 */
-router.post('/edit', validateAdd, hasMovie, async (ctx, next) => {
+router.post('/edit', Authorization, validateAdd, hasMovie, async (ctx, next) => {
     const { movieId, name, image, director, country, type, rate, introduction } = ctx.request.body
     let result = await Movie.updateOne(
         { movieId },
