@@ -4,7 +4,7 @@ import {
     Introduction,
     IntroductionItem,
 } from './style'
-import { post } from 'utils/http'
+import { get } from 'utils/http'
 import Header from 'components/header'
 import Water from 'components/water'
 import Draw from 'components/draw'
@@ -14,7 +14,8 @@ export default () => {
     const [total, setTotal] = useState(0)
     const [photo, setPhoto] = useState([])
     const getMorePhotos = async (page) => {
-        const res = await post('photo/findAll')
+        const res = await get('photo/findAll')
+        console.log(res.data.data)
         setTotal(res.data.total)
         setPhoto(res.data.data)
     }

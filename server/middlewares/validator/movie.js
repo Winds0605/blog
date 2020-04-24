@@ -9,7 +9,6 @@ const validateMovieId = async (ctx, next) => {
 
 const validateAdd = async (ctx, next) => {
     const rule = {
-        movieId: 'string',
         name: 'string',
         image: 'string',
         director: 'string',

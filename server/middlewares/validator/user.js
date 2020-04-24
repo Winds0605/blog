@@ -5,7 +5,6 @@ const validateRegister = async (ctx, next) => {
         username: 'string',
         email: 'string',
         password: 'string',
-        avatar: 'string',
     }
     return validatorFn(ctx, next, rule)
 }

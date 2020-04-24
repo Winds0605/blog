@@ -29,9 +29,7 @@ export default () => {
                 <Route path='/movie' exact component={Movie}></Route>
                 <Route path='/movie/:movieId' exact component={MovieDetail}></Route>
                 <Footer />
-                <BackTop className="back-top">
-                    <MyIcon type="icon-up" className="to-top" />
-                </BackTop>
+                <BackTop />
             </BrowserRouter>
         </div >
     );

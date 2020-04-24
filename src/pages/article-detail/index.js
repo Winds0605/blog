@@ -101,7 +101,7 @@ export default () => {
     }
 
     const back = () => {
-        history.goBack()
+        history.push('/article')
     }
 
     useEffect(() => {
